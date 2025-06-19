@@ -7,14 +7,12 @@ use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\Lightit\City>
+ * @extends Factory<\Lightit\Backoffice\Airline\Domain\Models\Airline>
  */
 class AirlineFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class-string<Airline>
+     * @var class-string<\Lightit\Backoffice\Airline\Domain\Models\Airline>
      */
     protected $model = Airline::class;
     public function definition(): array

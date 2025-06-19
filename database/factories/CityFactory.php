@@ -8,14 +8,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Lightit\Backoffice\City\Domain\Models\City;
 
 /**
- * @extends Factory<\Lightit\City>
+ * @extends Factory<\Lightit\Backoffice\City\Domain\Models\City>
  */
 class CityFactory extends Factory
 {
     /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class=-string<City>
+     * @var class-string<\Lightit\Backoffice\City\Domain\Models\City>
      */
     protected $model = City::class;
     public function definition(): array
