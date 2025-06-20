@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Lightit\Backoffice\Flight\Domain\DataTransferObject;
 
-use Carbon\CarbonImmutable;
 use DateTime;
 
 class FlightDto
@@ -16,7 +15,6 @@ class FlightDto
         public readonly DateTime $departureTime,
         public readonly DateTime $arrivalTime,
         public readonly int|null $flightId,
-    )
-    {
+    ) {
     }
 }

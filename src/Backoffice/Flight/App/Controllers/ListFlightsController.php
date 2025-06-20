@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Lightit\Backoffice\Flight\App\Resources\FlightResource;
 use Lightit\Backoffice\Flight\Domain\Actions\ListFlightsAction;
 
-
 class ListFlightsController
 {
     public function __invoke(

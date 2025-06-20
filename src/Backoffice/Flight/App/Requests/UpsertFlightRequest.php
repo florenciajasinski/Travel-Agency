@@ -11,7 +11,6 @@ use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
 
-
 class UpsertFlightRequest extends FormRequest
 {
     public const AIRLINE_ID = 'airline_id';
@@ -38,12 +37,10 @@ class UpsertFlightRequest extends FormRequest
         ];
     }
 
-
-
     public function after(): array
     {
         return [
-            function (Validator $validator) {
+            function (Validator $validator): void {
                 if ($this->validateSameOriginAndDestinationCity()) {
                     $validator->errors()->add(
                         self::ARRIVAL_CITY_ID,
@@ -51,13 +48,13 @@ class UpsertFlightRequest extends FormRequest
                     );
                 }
 
-                if (!$this->validateFlightDateTimes()) {
+                if (! $this->validateFlightDateTimes()) {
                     $validator->errors()->add(
                         self::DEPARTURE_TIME,
                         'The departure time must be before the arrival time.'
                     );
                 }
-            }
+            },
         ];
     }
 
@@ -73,10 +70,9 @@ class UpsertFlightRequest extends FormRequest
     {
         $departure = $this->date(self::DEPARTURE_TIME);
         $arrival = $this->date(self::ARRIVAL_TIME);
+
         return $departure < $arrival;
     }
-
-
 
     public function toDto(): FlightDto
     {

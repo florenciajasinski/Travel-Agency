@@ -11,8 +11,10 @@ use Lightit\Backoffice\Flight\Domain\Actions\UpsertFlightAction;
 
 class StoreFlightController
 {
-    public function __invoke(UpsertFlightRequest $updateFlightRequest, UpsertFlightAction $updateFlightAction): JsonResponse
-    {
+    public function __invoke(
+        UpsertFlightRequest $updateFlightRequest,
+        UpsertFlightAction $updateFlightAction,
+    ): JsonResponse {
         $flight = $updateFlightAction->execute($updateFlightRequest->toDto());
 
         return FlightResource::make($flight)

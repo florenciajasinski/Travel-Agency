@@ -10,9 +10,9 @@ use Lightit\Backoffice\Flight\App\Controllers\StoreFlightController;
 use Lightit\Backoffice\Flight\App\Controllers\UpdateFlightController;
 
 Route::prefix('flights')
-    ->group(static function () {
+    ->group(static function (): void {
         Route::prefix('{flight}')
-            ->group(static function () {
+            ->group(static function (): void {
                 Route::get('/', GetFlightController::class);
                 Route::patch('/', UpdateFlightController::class);
                 Route::delete('/', DeleteFlightController::class);

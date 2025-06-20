@@ -11,8 +11,6 @@ use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 
 /**
- *
- *
  * @property int                          $id
  * @property int                          $airline_id
  * @property int                          $departure_city_id
@@ -21,6 +19,7 @@ use Lightit\Backoffice\City\Domain\Models\City;
  * @property CarbonImmutable              $arrival_time
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Flight newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Flight newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Flight query()
@@ -32,6 +31,7 @@ use Lightit\Backoffice\City\Domain\Models\City;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Flight whereDepartureTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Flight whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Flight whereUpdatedAt($value)
+ *
  * @property-read Airline $airline
  * @property-read \Illuminate\Database\Eloquent\Collection<int, City> $arrivalCities
  * @property-read int|null $arrival_cities_count
@@ -39,6 +39,7 @@ use Lightit\Backoffice\City\Domain\Models\City;
  * @property-read int|null $departure_cities_count
  * @property-read City $arrivalCity
  * @property-read City $departureCity
+ *
  * @mixin \Eloquent
  */
 class Flight extends Model
