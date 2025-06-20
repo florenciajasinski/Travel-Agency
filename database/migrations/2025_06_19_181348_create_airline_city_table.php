@@ -21,6 +21,7 @@ return new class extends Migration
                 ->constrained('cities')
                 ->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['airline_id', 'city_id']);
         });
     }
 
