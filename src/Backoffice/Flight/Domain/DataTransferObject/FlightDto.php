@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Flight\Domain\DataTransferObject;
 
 use Carbon\CarbonImmutable;
-use DateTime;
 
 class FlightDto
 {

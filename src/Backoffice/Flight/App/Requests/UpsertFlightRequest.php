@@ -10,6 +10,7 @@ use Illuminate\Validation\Validator;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
+use Carbon\CarbonImmutable;
 
 class UpsertFlightRequest extends FormRequest
 {
@@ -71,18 +72,23 @@ class UpsertFlightRequest extends FormRequest
         $departure = $this->date(self::DEPARTURE_TIME);
         $arrival = $this->date(self::ARRIVAL_TIME);
 
+        if ($departure === null || $arrival === null) {
+            return false;
+        }
+
         return $departure < $arrival;
     }
 
     public function toDto(): FlightDto
     {
+
         return new FlightDto(
             airlineId: $this->integer(self::AIRLINE_ID),
             departureCityId: $this->integer(self::DEPARTURE_CITY_ID),
             arrivalCityId: $this->integer(self::ARRIVAL_CITY_ID),
-            departureTime: $this->date(self::DEPARTURE_TIME)->toImmutable(),
-            arrivalTime: $this->date(self::ARRIVAL_TIME)->toImmutable(),
-            flightId: (int) $this->route('flight') ?? null
+            departureTime: CarbonImmutable::parse((string) $this->string(self::DEPARTURE_TIME)),
+            arrivalTime: CarbonImmutable::parse((string) $this->string(self::ARRIVAL_TIME)),
+            flightId: $this->route('flight') ? (int) $this->route('flight') : null
         );
     }
 }
