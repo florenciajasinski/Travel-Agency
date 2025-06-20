@@ -14,8 +14,8 @@ use Lightit\Backoffice\City\Domain\Models\City;
  * @property int                          $airline_id
  * @property int                          $departure_city_id
  * @property int                          $arrival_city_id
- * @property string                       $departure_time
- * @property string                       $arrival_time
+ * @property CarbonImmutable              $departure_time
+ * @property CarbonImmutable              $arrival_time
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  *
@@ -46,6 +46,11 @@ class Flight extends Model
     protected $table = 'flights';
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'departure_time' => 'immutable_datetime',
+        'arrival_time' => 'immutable_datetime',
+    ];
 
     /**
      * @return BelongsTo<Airline, $this>
