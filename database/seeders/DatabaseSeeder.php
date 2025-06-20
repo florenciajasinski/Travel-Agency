@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Database\Factories\UserFactory;
+use Database\Factories\CityFactory;
+use Database\Factories\AirlineFactory;
+use Database\Factories\FlightFactory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        UserFactory::new()->createMany(35);
+
+        CityFactory::new()->createMany(10);
+        AirlineFactory::new()->createMany(10);
+        FlightFactory::new()->createMany(10);
     }
 }
