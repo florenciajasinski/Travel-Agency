@@ -80,8 +80,8 @@ class UpsertFlightRequest extends FormRequest
             airlineId: $this->integer(self::AIRLINE_ID),
             departureCityId: $this->integer(self::DEPARTURE_CITY_ID),
             arrivalCityId: $this->integer(self::ARRIVAL_CITY_ID),
-            departureTime: $this->date(self::DEPARTURE_TIME),
-            arrivalTime: $this->date(self::ARRIVAL_TIME),
+            departureTime: $this->date(self::DEPARTURE_TIME)->toImmutable(),
+            arrivalTime: $this->date(self::ARRIVAL_TIME)->toImmutable(),
             flightId: (int) $this->route('flight') ?? null
         );
     }
