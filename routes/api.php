@@ -29,9 +29,9 @@ Route::prefix('cities')
     ->group(static function (): void {
         Route::prefix('{city}')
             ->group(static function (): void {
-               // Route::patch('/', UpdateCityController::class);
-               // Route::delete('/', DeleteCityController::class);
+               Route::put('/', UpdateCityController::class);
+               Route::delete('/', DeleteCityController::class);
             });
-       // Route::get('/', ListCitiesController::class);
-        //Route::post('/', StoreCityController::class);
+       Route::get('/', ListCitiesController::class);
+       Route::post('/', StoreCityController::class);
     });
