@@ -33,7 +33,7 @@ describe('flights', function (): void {
                 fn (AssertableJson $json): \Illuminate\Testing\Fluent\AssertableJson =>
                 $json->has(
                     'data',
-                    fn (AssertableJson $json) =>
+                    fn (AssertableJson $json): \Illuminate\Testing\Fluent\AssertableJson =>
                     $json
                         ->where('airline_id', $airline->id)
                         ->where('departure_city_id', $departureCity->id)

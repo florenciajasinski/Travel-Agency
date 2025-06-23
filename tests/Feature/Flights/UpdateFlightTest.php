@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Flights;
 
+use Carbon\CarbonImmutable;
 use Database\Factories\AirlineFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\FlightFactory;
-use Carbon\CarbonImmutable;
 use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\patchJson;
@@ -37,7 +37,7 @@ describe('flights', function (): void {
                 fn (AssertableJson $json): \Illuminate\Testing\Fluent\AssertableJson =>
                 $json->has(
                     'data',
-                    fn (AssertableJson $json) =>
+                    fn (AssertableJson $json): \Illuminate\Testing\Fluent\AssertableJson =>
                     $json
                         ->where('id', $flight->id)
                         ->where('airline_id', $newAirline->id)
