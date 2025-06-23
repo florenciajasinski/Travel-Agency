@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 use Lightit\Backoffice\Flight\Domain\Models\Flight;
 
 /**
@@ -16,10 +17,11 @@ class FlightFactory extends Factory
      * @var class-string<\Lightit\Backoffice\Flight\Domain\Models\Flight>
      */
     protected $model = Flight::class;
+
     public function definition(): array
     {
-        $departure = fake()->dateTimeBetween('+1 days', '+10 days');
-        $arrival = fake()->dateTimeBetween($departure, '+12 days');
+        $departure = Carbon::instance(fake()->dateTimeBetween('+1 days', '+10 days'));
+        $arrival = Carbon::instance(fake()->dateTimeBetween($departure, '+12 days'));
 
         return [
             'airline_id' => AirlineFactory::new(),
@@ -29,5 +31,4 @@ class FlightFactory extends Factory
             'arrival_time' => $arrival,
         ];
     }
-
 }

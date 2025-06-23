@@ -7,6 +7,8 @@ namespace Lightit\Backoffice\Flight\App\Requests;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
@@ -14,18 +16,11 @@ use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
 class UpdateFlightRequest extends FormRequest
 {
     public const AIRLINE_ID = 'airline_id';
-
     public const DEPARTURE_CITY_ID = 'departure_city_id';
-
     public const ARRIVAL_CITY_ID = 'arrival_city_id';
-
     public const DEPARTURE_TIME = 'departure_time';
-
     public const ARRIVAL_TIME = 'arrival_time';
 
-    /**
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
         return [
@@ -37,9 +32,10 @@ class UpdateFlightRequest extends FormRequest
         ];
     }
 
-    public function withValidator(\Illuminate\Contracts\Validation\Validator $validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function (\Illuminate\Contracts\Validation\Validator $validator): void {
+        $validator->after(function (Validator $validator): void {
+
             if ($this->isOriginCitySameAsDestinationCity()) {
                 $validator->errors()->add(
                     self::ARRIVAL_CITY_ID,
@@ -56,6 +52,16 @@ class UpdateFlightRequest extends FormRequest
         });
     }
 
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422)
+        );
+    }
+
     private function isOriginCitySameAsDestinationCity(): bool
     {
         $arrivalCityId = $this->integer(self::ARRIVAL_CITY_ID);
@@ -66,14 +72,10 @@ class UpdateFlightRequest extends FormRequest
 
     private function isFlightDepartureTimeBeforeArrivalTime(): bool
     {
-        $departure = $this->date(self::DEPARTURE_TIME);
-        $arrival = $this->date(self::ARRIVAL_TIME);
+        $departure = $this->input(self::DEPARTURE_TIME);
+        $arrival = $this->input(self::ARRIVAL_TIME);
 
-        if ($departure === null || $arrival === null) {
-            return false;
-        }
-
-        return $departure->lt($arrival);
+        return $departure && $arrival && $departure < $arrival;
     }
 
     public function toDto(): FlightDto

@@ -64,16 +64,14 @@ class StoreFlightRequest extends FormRequest
         return $arrivalCityId == $departureCityId;
     }
 
+
+
     private function isFlightDepartureTimeBeforeArrivalTime(): bool
     {
-        $departure = $this->date(self::DEPARTURE_TIME);
-        $arrival = $this->date(self::ARRIVAL_TIME);
+        $departure = $this->input(self::DEPARTURE_TIME);
+        $arrival = $this->input(self::ARRIVAL_TIME);
 
-        if ($departure === null || $arrival === null) {
-            return false;
-        }
-
-        return $departure->lt($arrival);
+        return $departure && $arrival && $departure < $arrival;
     }
 
     public function toDto(): FlightDto
