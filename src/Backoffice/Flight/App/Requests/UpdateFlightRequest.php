@@ -32,7 +32,7 @@ class UpdateFlightRequest extends FormRequest
             self::DEPARTURE_CITY_ID => ['required', Rule::exists(City::class, 'id')],
             self::ARRIVAL_CITY_ID => ['required', Rule::exists(City::class, 'id')],
             self::DEPARTURE_TIME => ['required', 'date_format:Y-m-d H:i:s'],
-            self::ARRIVAL_TIME => ['required', 'date_format:Y-m-d H:i:s'],
+            self::ARRIVAL_TIME => ['required', 'date_format:Y-m-d H:i:s' , Rule::date()->after(self::DEPARTURE_TIME)],
         ];
     }
 
@@ -43,13 +43,6 @@ class UpdateFlightRequest extends FormRequest
                 $validator->errors()->add(
                     self::ARRIVAL_CITY_ID,
                     'The arrival city cannot be the same as the departure city.'
-                );
-            }
-
-            if (! $this->isFlightDepartureTimeBeforeArrivalTime()) {
-                $validator->errors()->add(
-                    self::DEPARTURE_TIME,
-                    'The departure time must be before the arrival time.'
                 );
             }
         });
@@ -73,22 +66,14 @@ class UpdateFlightRequest extends FormRequest
         return $arrivalCityId == $departureCityId;
     }
 
-    private function isFlightDepartureTimeBeforeArrivalTime(): bool
-    {
-        $departure = $this->input(self::DEPARTURE_TIME);
-        $arrival = $this->input(self::ARRIVAL_TIME);
-
-        return $departure && $arrival && $departure < $arrival;
-    }
-
     public function toDto(): FlightDto
     {
         return new FlightDto(
             airlineId: $this->integer(self::AIRLINE_ID),
             departureCityId: $this->integer(self::DEPARTURE_CITY_ID),
             arrivalCityId: $this->integer(self::ARRIVAL_CITY_ID),
-            departureTime: CarbonImmutable::parse((string) $this->string(self::DEPARTURE_TIME)),
-            arrivalTime: CarbonImmutable::parse((string) $this->string(self::ARRIVAL_TIME))
+            departureTime: CarbonImmutable::parse($this->string(self::DEPARTURE_TIME)->toString()),
+            arrivalTime: CarbonImmutable::parse($this->string(self::ARRIVAL_TIME)->toString()),
         );
     }
 }

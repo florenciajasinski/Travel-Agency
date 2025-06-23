@@ -14,7 +14,7 @@ Route::prefix('flights')
         Route::prefix('{flight}')
             ->group(static function (): void {
                 Route::get('/', GetFlightController::class);
-                Route::patch('/', UpdateFlightController::class);
+                Route::put('/', UpdateFlightController::class);
                 Route::delete('/', DeleteFlightController::class);
             });
         Route::get('/', ListFlightsController::class);

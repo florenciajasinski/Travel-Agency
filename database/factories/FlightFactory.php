@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Lightit\Backoffice\Flight\Domain\Models\Flight;
@@ -20,9 +21,8 @@ class FlightFactory extends Factory
 
     public function definition(): array
     {
-        $departure = Carbon::instance(fake()->dateTimeBetween('+1 days', '+10 days'));
-        $arrival = Carbon::instance(fake()->dateTimeBetween($departure, '+12 days'));
-
+        $departure = CarbonImmutable::createFromMutable(fake()->dateTimeBetween('+1 days', '+10 days'));
+        $arrival = CarbonImmutable::createFromMutable(fake()->dateTimeBetween($departure, '+12 days'));
         return [
             'airline_id' => AirlineFactory::new(),
             'departure_city_id' => CityFactory::new(),

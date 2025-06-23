@@ -15,7 +15,7 @@ class DeleteFlightController
         $deleteFlightAction->execute($flight);
 
         return response()->json([
-            'message' => 'Flight deleted successfully.',
+            'message' => 'Flight deleted successfully.'
         ]);
     }
 }

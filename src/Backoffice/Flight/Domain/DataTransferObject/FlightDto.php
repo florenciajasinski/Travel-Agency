@@ -6,14 +6,14 @@ namespace Lightit\Backoffice\Flight\Domain\DataTransferObject;
 
 use Carbon\CarbonImmutable;
 
-class FlightDto
+readonly class FlightDto
 {
     public function __construct(
-        public readonly int $airlineId,
-        public readonly int $departureCityId,
-        public readonly int $arrivalCityId,
-        public readonly CarbonImmutable $departureTime,
-        public readonly CarbonImmutable $arrivalTime,
+        public int $airlineId,
+        public int $departureCityId,
+        public int $arrivalCityId,
+        public CarbonImmutable $departureTime,
+        public CarbonImmutable $arrivalTime,
     ) {
     }
 }

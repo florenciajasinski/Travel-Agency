@@ -10,7 +10,7 @@ use Database\Factories\CityFactory;
 use Database\Factories\FlightFactory;
 use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\patchJson;
+use function Pest\Laravel\putJson;
 
 const FLIGHT_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
@@ -29,7 +29,7 @@ describe('flights', function (): void {
             'arrival_time' => now()->addDays(4)->format(FLIGHT_DATETIME_FORMAT),
         ];
 
-        $response = patchJson("/api/flights/{$flight->id}", $data);
+        $response = putJson("/api/flights/{$flight->id}", $data);
 
         $response
             ->assertOk()
@@ -75,7 +75,7 @@ describe('flights', function (): void {
         $overrideArray = is_callable($override) ? $override() : $override;
         $data = array_merge($data, is_array($overrideArray) ? $overrideArray : []);
 
-        $response = patchJson("/api/flights/{$flight->id}", $data);
+        $response = putJson("/api/flights/{$flight->id}", $data);
 
         $response->assertUnprocessable();
         $json = (array) $response->json();
