@@ -7,11 +7,10 @@ namespace Lightit\Backoffice\Flight\Domain\Actions;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
 use Lightit\Backoffice\Flight\Domain\Models\Flight;
 
-class UpsertFlightAction
+class UpdateFlightAction
 {
-    public function execute(FlightDto $flightDto): Flight
+    public function execute(FlightDto $flightDto, Flight $flight): Flight
     {
-        $flight = Flight::query()->find($flightDto->flightId) ?? new Flight();
 
         $flight->airline_id = $flightDto->airlineId;
         $flight->departure_city_id = $flightDto->departureCityId;
