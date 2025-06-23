@@ -12,6 +12,11 @@ use Lightit\Backoffice\City\App\Controllers\DeleteCityController;
 use Lightit\Backoffice\City\App\Controllers\ListCitiesController;
 use Lightit\Backoffice\City\App\Controllers\StoreCityController;
 use Lightit\Backoffice\City\App\Controllers\UpdateCityController;
+use Lightit\Backoffice\Airline\App\Controllers\DeleteAirlineController;
+use Lightit\Backoffice\Airline\App\Controllers\ListAirlinesController;
+use Lightit\Backoffice\Airline\App\Controllers\ListAirlineCitiesController;
+use Lightit\Backoffice\Airline\App\Controllers\StoreAirlineController;
+use Lightit\Backoffice\Airline\App\Controllers\UpdateAirlineController;
 
 Route::prefix('flights')
     ->group(static function (): void {
@@ -35,3 +40,16 @@ Route::prefix('cities')
        Route::get('/', ListCitiesController::class);
        Route::post('/', StoreCityController::class);
     });
+
+Route::prefix('airlines')
+    ->group(static function (): void {
+        Route::prefix('{airline}')
+            ->group(static function (): void {
+               //Route::put('/', UpdateAirlineController::class);
+               Route::delete('/', DeleteAirlineController::class);
+               //Route::get('/cities', ListAirlineCitiesController::class);
+            });
+       //Route::get('/', ListAirlinesController::class);
+       //Route::post('/', StoreAirlineController::class);
+    });
+
