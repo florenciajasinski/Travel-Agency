@@ -13,7 +13,7 @@ class FlightDto
         public readonly int $departureCityId,
         public readonly int $arrivalCityId,
         public readonly CarbonImmutable $departureTime,
-        public readonly CarbonImmutable $arrivalTime
+        public readonly CarbonImmutable $arrivalTime,
     ) {
     }
 }

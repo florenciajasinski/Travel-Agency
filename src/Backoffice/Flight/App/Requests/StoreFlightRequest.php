@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Lightit\Backoffice\Flight\App\Requests;
@@ -36,9 +37,9 @@ class StoreFlightRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function (\Illuminate\Contracts\Validation\Validator $validator): void {
             if ($this->isOriginCitySameAsDestinationCity()) {
                 $validator->errors()->add(
                     self::ARRIVAL_CITY_ID,

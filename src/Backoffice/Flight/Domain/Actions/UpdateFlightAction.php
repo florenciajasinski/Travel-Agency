@@ -11,7 +11,6 @@ class UpdateFlightAction
 {
     public function execute(FlightDto $flightDto, Flight $flight): Flight
     {
-
         $flight->airline_id = $flightDto->airlineId;
         $flight->departure_city_id = $flightDto->departureCityId;
         $flight->arrival_city_id = $flightDto->arrivalCityId;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Lightit\Backoffice\Flight\App\Requests;
@@ -6,7 +7,6 @@ namespace Lightit\Backoffice\Flight\App\Requests;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
@@ -37,9 +37,9 @@ class UpdateFlightRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function (\Illuminate\Contracts\Validation\Validator $validator): void {
             if ($this->isOriginCitySameAsDestinationCity()) {
                 $validator->errors()->add(
                     self::ARRIVAL_CITY_ID,
