@@ -12,8 +12,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ListCitiesAction
 {
     /**
-     * @param int $perPage
-     * @param int $page
+     *
      * @return LengthAwarePaginator<int, Model>
      */
     public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator

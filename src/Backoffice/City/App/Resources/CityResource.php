@@ -7,7 +7,6 @@ namespace Lightit\Backoffice\City\App\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-
 /**
  * @property-read \Lightit\Backoffice\City\Domain\Models\City $resource
  */
