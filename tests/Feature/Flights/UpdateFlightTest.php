@@ -7,8 +7,8 @@ namespace Tests\Feature\Flights;
 use Database\Factories\AirlineFactory;
 use Database\Factories\CityFactory;
 use Database\Factories\FlightFactory;
+use Carbon\CarbonImmutable;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Support\Carbon;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\patchJson;
 
@@ -16,10 +16,10 @@ const FLIGHT_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
 describe('flights', function (): void {
     it('can update a flight successfully', function (): void {
-        $flight = FlightFactory::new()->create();
-        $newAirline = AirlineFactory::new()->create();
-        $newDepartureCity = CityFactory::new()->create();
-        $newArrivalCity = CityFactory::new()->create();
+        $flight = FlightFactory::new()->createOne();
+        $newAirline = AirlineFactory::new()->createOne();
+        $newDepartureCity = CityFactory::new()->createOne();
+        $newArrivalCity = CityFactory::new()->createOne();
 
         $data = [
             'airline_id' => $newAirline->id,
@@ -33,19 +33,18 @@ describe('flights', function (): void {
 
         $response
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->has('data', fn ($json) =>
+            ->assertJson(
+                fn (AssertableJson $json): \Illuminate\Testing\Fluent\AssertableJson =>
+                $json->has(
+                    'data',
+                    fn (AssertableJson $json) =>
                     $json
                         ->where('id', $flight->id)
                         ->where('airline_id', $newAirline->id)
                         ->where('departure_city_id', $newDepartureCity->id)
                         ->where('arrival_city_id', $newArrivalCity->id)
-                        ->where('departure_time', function ($value) use ($data) {
-                            return Carbon::parse($value)->format(FLIGHT_DATETIME_FORMAT) === $data['departure_time'];
-                        })
-                        ->where('arrival_time', function ($value) use ($data) {
-                            return Carbon::parse($value)->format(FLIGHT_DATETIME_FORMAT) === $data['arrival_time'];
-                        })
+                        ->where('departure_time', CarbonImmutable::parse($data['departure_time'])->toJSON())
+                        ->where('arrival_time', CarbonImmutable::parse($data['arrival_time'])->toJSON())
                         ->etc()
                 )
             );
@@ -61,10 +60,10 @@ describe('flights', function (): void {
     });
 
     it('cannot update a flight with missing or invalid data', function (array $override, string $expectedField): void {
-        $flight = FlightFactory::new()->create();
-        $airline = AirlineFactory::new()->create();
-        $departureCity = CityFactory::new()->create();
-        $arrivalCity = CityFactory::new()->create();
+        $flight = FlightFactory::new()->createOne();
+        $airline = AirlineFactory::new()->createOne();
+        $departureCity = CityFactory::new()->createOne();
+        $arrivalCity = CityFactory::new()->createOne();
 
         $data = [
             'airline_id' => $airline->id,
@@ -73,15 +72,15 @@ describe('flights', function (): void {
             'departure_time' => now()->addDay()->format(FLIGHT_DATETIME_FORMAT),
             'arrival_time' => now()->addDays(2)->format(FLIGHT_DATETIME_FORMAT),
         ];
-        $data = array_merge($data, $override instanceof \Closure ? $override() : $override);
+        $overrideArray = is_callable($override) ? $override() : $override;
+        $data = array_merge($data, is_array($overrideArray) ? $overrideArray : []);
 
         $response = patchJson("/api/flights/{$flight->id}", $data);
 
         $response->assertUnprocessable();
-        $json = $response->json();
+        $json = (array) $response->json();
         expect($json)->toHaveKey('errors');
-        expect($json['errors'])->toHaveKey($expectedField);
-
+        expect((array) $json['errors'])->toHaveKey($expectedField);
     })->with([
         'airline_id is required' => [['airline_id' => ''], 'airline_id'],
         'departure_city_id is required' => [['departure_city_id' => ''], 'departure_city_id'],
@@ -90,8 +89,9 @@ describe('flights', function (): void {
         'arrival_time is required' => [['arrival_time' => ''], 'arrival_time'],
         'departure_time must be date' => [['departure_time' => 'not-a-date'], 'departure_time'],
         'arrival_time must be date' => [['arrival_time' => 'not-a-date'], 'arrival_time'],
-        'arrival_city_id must be different from departure_city_id' => [function () {
-            $city = CityFactory::new()->create();
+        'arrival_city_id must be different from departure_city_id' => [function (): array {
+            $city = CityFactory::new()->createOne();
+
             return [
                 'departure_city_id' => $city->id,
                 'arrival_city_id' => $city->id,

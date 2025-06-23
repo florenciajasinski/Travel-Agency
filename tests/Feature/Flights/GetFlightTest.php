@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Users;
 
+use Database\Factories\FlightFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Testing\Fluent\AssertableJson;
-use function Pest\Laravel\getJson;
-use Database\Factories\FlightFactory;
 use Lightit\Backoffice\Flight\App\Resources\FlightResource;
+use function Pest\Laravel\getJson;
 
 describe('flights', function (): void {
-
     /** @see GetFlightController */
     it('retrieves a flight and returns a successful response', function (): void {
         $existingFlight = FlightFactory::new()->createOne();

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Flight\App\Requests;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
@@ -16,9 +16,13 @@ use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
 class UpdateFlightRequest extends FormRequest
 {
     public const AIRLINE_ID = 'airline_id';
+
     public const DEPARTURE_CITY_ID = 'departure_city_id';
+
     public const ARRIVAL_CITY_ID = 'arrival_city_id';
+
     public const DEPARTURE_TIME = 'departure_time';
+
     public const ARRIVAL_TIME = 'arrival_time';
 
     public function rules(): array
@@ -35,7 +39,6 @@ class UpdateFlightRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
-
             if ($this->isOriginCitySameAsDestinationCity()) {
                 $validator->errors()->add(
                     self::ARRIVAL_CITY_ID,

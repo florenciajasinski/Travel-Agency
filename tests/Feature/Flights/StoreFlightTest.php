@@ -11,12 +11,11 @@ use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\postJson;
 
-
 describe('flights', function (): void {
     it('can create a flight successfully', function (): void {
-        $airline = AirlineFactory::new()->create();
-        $departureCity = CityFactory::new()->create();
-        $arrivalCity = CityFactory::new()->create();
+        $airline = AirlineFactory::new()->createOne();
+        $departureCity = CityFactory::new()->createOne();
+        $arrivalCity = CityFactory::new()->createOne();
 
         $data = [
             'airline_id' => $airline->id,
@@ -30,8 +29,11 @@ describe('flights', function (): void {
 
         $response
             ->assertCreated()
-            ->assertJson(fn (AssertableJson $json) =>
-                $json->has('data', fn ($json) =>
+            ->assertJson(
+                fn (AssertableJson $json): \Illuminate\Testing\Fluent\AssertableJson =>
+                $json->has(
+                    'data',
+                    fn (AssertableJson $json) =>
                     $json
                         ->where('airline_id', $airline->id)
                         ->where('departure_city_id', $departureCity->id)
@@ -41,7 +43,6 @@ describe('flights', function (): void {
                         ->etc()
                 )
             );
-
         assertDatabaseHas('flights', [
             'airline_id' => $airline->id,
             'departure_city_id' => $departureCity->id,
@@ -52,9 +53,9 @@ describe('flights', function (): void {
     });
 
     it('cannot create a flight with invalid data', function (string $field, mixed $value): void {
-        $airline = AirlineFactory::new()->create();
-        $departureCity = CityFactory::new()->create();
-        $arrivalCity = CityFactory::new()->create();
+        $airline = AirlineFactory::new()->createOne();
+        $departureCity = CityFactory::new()->createOne();
+        $arrivalCity = CityFactory::new()->createOne();
 
         $data = [
             'airline_id' => $airline->id,
@@ -78,8 +79,9 @@ describe('flights', function (): void {
         'arrival_time is required' => ['arrival_time', ''],
         'departure_time must be date' => ['departure_time', 'not-a-date'],
         'arrival_time must be date' => ['arrival_time', 'not-a-date'],
-        'arrival_city_id must be different from departure_city_id' => ['arrival_city_id', fn() => function () {
-            $city = CityFactory::new()->create();
+        'arrival_city_id must be different from departure_city_id' => ['arrival_city_id', fn (): \Closure => function () {
+            $city = CityFactory::new()->createOne();
+
             return $city->id;
         }],
     ]);

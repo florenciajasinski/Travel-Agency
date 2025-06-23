@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Tests\Feature\Flights;
+
 use Database\Factories\FlightFactory;
 use function Pest\Laravel\getJson;
 

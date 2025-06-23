@@ -64,8 +64,6 @@ class StoreFlightRequest extends FormRequest
         return $arrivalCityId == $departureCityId;
     }
 
-
-
     private function isFlightDepartureTimeBeforeArrivalTime(): bool
     {
         $departure = $this->input(self::DEPARTURE_TIME);
