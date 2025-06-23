@@ -98,4 +98,66 @@ describe('flights', function (): void {
             ];
         }, 'arrival_city_id'],
     ]);
+
+    it('returns 404 when trying to update a flight that does not exist', function (): void {
+        $nonExistentFlightId = 999999;
+        $airline = AirlineFactory::new()->createOne();
+        $departureCity = CityFactory::new()->createOne();
+        $arrivalCity = CityFactory::new()->createOne();
+
+        $data = [
+            'airline_id' => $airline->id,
+            'departure_city_id' => $departureCity->id,
+            'arrival_city_id' => $arrivalCity->id,
+            'departure_time' => now()->addDay()->format(FLIGHT_DATETIME_FORMAT),
+            'arrival_time' => now()->addDays(2)->format(FLIGHT_DATETIME_FORMAT),
+        ];
+
+        $response = putJson("/api/flights/{$nonExistentFlightId}", $data);
+
+        $response->assertNotFound();
+    });
+
+    it('does not update if arrival_time is before departure_time', function (): void {
+        $flight = FlightFactory::new()->createOne();
+        $airline = AirlineFactory::new()->createOne();
+        $departureCity = CityFactory::new()->createOne();
+        $arrivalCity = CityFactory::new()->createOne();
+
+        $data = [
+            'airline_id' => $airline->id,
+            'departure_city_id' => $departureCity->id,
+            'arrival_city_id' => $arrivalCity->id,
+            'departure_time' => now()->addDays(2)->format(FLIGHT_DATETIME_FORMAT),
+            'arrival_time' => now()->addDay()->format(FLIGHT_DATETIME_FORMAT),
+        ];
+
+        $response = putJson("/api/flights/{$flight->id}", $data);
+
+        $response->assertUnprocessable();
+        $json = (array) $response->json();
+        expect($json)->toHaveKey('errors');
+        expect((array) $json['errors'])->toHaveKey('arrival_time');
+    });
+
+    it('does not update if airline does not exist', function (): void {
+        $flight = FlightFactory::new()->createOne();
+        $departureCity = CityFactory::new()->createOne();
+        $arrivalCity = CityFactory::new()->createOne();
+
+        $data = [
+            'airline_id' => 999999,
+            'departure_city_id' => $departureCity->id,
+            'arrival_city_id' => $arrivalCity->id,
+            'departure_time' => now()->addDay()->format(FLIGHT_DATETIME_FORMAT),
+            'arrival_time' => now()->addDays(2)->format(FLIGHT_DATETIME_FORMAT),
+        ];
+
+        $response = putJson("/api/flights/{$flight->id}", $data);
+
+        $response->assertUnprocessable();
+        $json = (array) $response->json();
+        expect($json)->toHaveKey('errors');
+        expect((array) $json['errors'])->toHaveKey('airline_id');
+    });
 });

@@ -7,6 +7,7 @@ namespace Lightit\Backoffice\Flight\App\Controllers;
 use Illuminate\Http\JsonResponse;
 use Lightit\Backoffice\Flight\Domain\Actions\DeleteFlightAction;
 use Lightit\Backoffice\Flight\Domain\Models\Flight;
+use Lightit\Backoffice\Flight\App\Resources\FlightResource;
 
 class DeleteFlightController
 {
@@ -14,8 +15,8 @@ class DeleteFlightController
     {
         $deleteFlightAction->execute($flight);
 
-        return response()->json([
-            'message' => 'Flight deleted successfully.'
-        ]);
+        return FlightResource::make($flight)
+            ->response()
+            ->setStatusCode(JsonResponse::HTTP_NO_CONTENT);
     }
 }
