@@ -84,6 +84,8 @@ describe('flights', function (): void {
 
             return $city->id;
         }],
-        'arrival_time must be after departure_time' => ['arrival_time', fn (): string => now()->subDay()->format('Y-m-d H:i:s')],
+        'arrival_time must be after departure_time' => ['arrival_time', fn (): string => now()->subDay()->format(
+            'Y-m-d H:i:s'
+        )],
     ]);
 });

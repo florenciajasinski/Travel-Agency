@@ -9,7 +9,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateFlightRequest extends BaseFlightRequest
 {
-
     protected function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(

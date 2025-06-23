@@ -6,9 +6,8 @@ namespace Tests\Feature\Flights;
 
 use Database\Factories\AirlineFactory;
 use Database\Factories\FlightFactory;
+use Illuminate\Database\Eloquent\Collection;
 use function Pest\Laravel\getJson;
-use \Illuminate\Database\Eloquent\Collection;
-use Lightit\Backoffice\Airline\Domain\Models\Airline;
 
 describe('flights', function (): void {
     /** @see StoreFlightController */
@@ -42,8 +41,8 @@ describe('flights', function (): void {
         getJson(url('/api/flights?sort=departure_time'))
             ->assertSuccessful()
             ->assertSeeInOrder([
-                $earlyFlight->id,
-                $lateFlight->id,
+                $earlyFlight ? $earlyFlight->id : '',
+                $lateFlight ? $lateFlight->id : '',
             ]);
     });
 });

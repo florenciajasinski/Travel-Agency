@@ -5,19 +5,23 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Flight\App\Requests;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
-use Illuminate\Contracts\Validation\Validator;
 
 abstract class BaseFlightRequest extends FormRequest
 {
     public const AIRLINE_ID = 'airline_id';
+
     public const DEPARTURE_CITY_ID = 'departure_city_id';
+
     public const ARRIVAL_CITY_ID = 'arrival_city_id';
+
     public const DEPARTURE_TIME = 'departure_time';
+
     public const ARRIVAL_TIME = 'arrival_time';
 
     public function rules(): array
