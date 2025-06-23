@@ -39,7 +39,6 @@ abstract class BaseFlightRequest extends FormRequest
                 'required',
                 'date_format:Y-m-d H:i:s',
                 'after:' . self::DEPARTURE_TIME,
-                'after:now',
             ],
         ];
     }

@@ -15,8 +15,6 @@ class DeleteFlightController
     {
         $deleteFlightAction->execute($flight);
 
-        return FlightResource::make($flight)
-            ->response()
-            ->setStatusCode(JsonResponse::HTTP_NO_CONTENT);
+        return response()->json(null, 204);
     }
 }
