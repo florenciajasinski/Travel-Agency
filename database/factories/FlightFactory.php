@@ -21,8 +21,8 @@ class FlightFactory extends Factory
 
     public function definition(): array
     {
-        $departure = CarbonImmutable::createFromMutable(fake()->dateTimeBetween('+1 days', '+10 days'));
-        $arrival = CarbonImmutable::createFromMutable(fake()->dateTimeBetween($departure, '+12 days'));
+        $departure = CarbonImmutable::instance(fake()->dateTimeBetween('+1 days', '+10 days'));
+        $arrival = CarbonImmutable::instance(fake()->dateTimeBetween($departure, '+12 days'));
         return [
             'airline_id' => AirlineFactory::new(),
             'departure_city_id' => CityFactory::new(),
