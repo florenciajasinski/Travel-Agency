@@ -41,6 +41,7 @@
                     }
                 ]
             },
+            { "action": "composer run-script phpstan", "options": [] },
             { "action": "composer run-script ecs:fix", "options": [] },
             { "action": "composer run-script rector:fix ", "options": [] }
         ]
