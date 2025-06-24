@@ -79,8 +79,10 @@ describe('flights', function (): void {
 
         $response->assertUnprocessable();
         $json = (array) $response->json();
-        expect($json)->toHaveKey('errors');
-        expect((array) $json['errors'])->toHaveKey($expectedField);
+        expect($json)->toHaveKey('error');
+        /** @var array $error */
+        $error = $json['error'];
+        expect((array) $error['fields'])->toHaveKey($expectedField);
     })->with([
         'airline_id is required' => [['airline_id' => ''], 'airline_id'],
         'departure_city_id is required' => [['departure_city_id' => ''], 'departure_city_id'],
@@ -136,8 +138,10 @@ describe('flights', function (): void {
 
         $response->assertUnprocessable();
         $json = (array) $response->json();
-        expect($json)->toHaveKey('errors');
-        expect((array) $json['errors'])->toHaveKey('arrival_time');
+        expect($json)->toHaveKey('error');
+        /** @var array $error */
+        $error = $json['error'];
+        expect((array) $error['fields'])->toHaveKey('arrival_time');
     });
 
     it('does not update if airline does not exist', function (): void {
@@ -157,7 +161,8 @@ describe('flights', function (): void {
 
         $response->assertUnprocessable();
         $json = (array) $response->json();
-        expect($json)->toHaveKey('errors');
-        expect((array) $json['errors'])->toHaveKey('airline_id');
+        /** @var array $error */
+        $error = $json['error'];
+        expect((array) $error['fields'])->toHaveKey('airline_id');
     });
 });

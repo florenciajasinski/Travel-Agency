@@ -12,7 +12,7 @@ use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Lightit\Backoffice\Flight\Domain\DataTransferObject\FlightDto;
 
-abstract class BaseFlightRequest extends FormRequest
+class UpsertFlightRequest extends FormRequest
 {
     public const AIRLINE_ID = 'airline_id';
 
