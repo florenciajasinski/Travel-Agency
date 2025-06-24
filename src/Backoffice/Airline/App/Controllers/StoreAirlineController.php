@@ -7,15 +7,16 @@ namespace Lightit\Backoffice\Airline\App\Controllers;
 use Illuminate\Http\JsonResponse;
 use Lightit\Backoffice\Airline\App\Requests\UpsertAirlineRequest;
 use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
-use Lightit\Backoffice\Airline\Domain\Actions\StoreAirlineAction;
+use Lightit\Backoffice\Airline\Domain\Actions\UpsertAirlineAction;
+use Lightit\Backoffice\Airline\Domain\Models\Airline;
 
 class StoreAirlineController
 {
     public function __invoke(
         UpsertAirlineRequest $upsertAirlineRequest,
-        StoreAirlineAction $storeAirlineAction,
+        UpsertAirlineAction $upsertAirlineAction,
     ): JsonResponse {
-        $airline = $storeAirlineAction->execute($upsertAirlineRequest->toDto());
+        $airline = $upsertAirlineAction->execute($upsertAirlineRequest->toDto());
 
         return AirlineResource::make($airline)
             ->response()

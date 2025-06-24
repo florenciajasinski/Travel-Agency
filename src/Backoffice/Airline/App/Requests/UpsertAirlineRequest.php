@@ -15,10 +15,20 @@ class UpsertAirlineRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            self::NAME => ['required', 'string', 'max:255', 'unique:airlines,name'],
-            self::DESCRIPTION => ['required', 'string', 'max:255'],
+        $rules = [
+            self::NAME => ['string', 'max:255', 'unique:airlines,name'],
+            self::DESCRIPTION => ['string', 'max:255'],
         ];
+
+        if ($this->isMethod('post')) {
+            $rules[self::NAME][] = 'required';
+            $rules[self::DESCRIPTION][] = 'required';
+        } else {
+            $rules[self::NAME][] = 'sometimes';
+            $rules[self::DESCRIPTION][] = 'sometimes';
+        }
+
+        return $rules;
     }
 
     public function toDto(): AirlineDto
