@@ -17,7 +17,7 @@ class UpsertAirlineRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            self::NAME => ['string', 'max:255' , Rule::unique('airlines', 'name')],
+            self::NAME => ['string', 'max:255', Rule::unique('airlines', 'name')],
             self::DESCRIPTION => ['string', 'max:255'],
         ];
 
