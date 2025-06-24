@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Lightit\Backoffice\Airline\App\Requests\UpsertAirlineRequest;
 use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
 use Lightit\Backoffice\Airline\Domain\Actions\UpsertAirlineAction;
-use Lightit\Backoffice\Airline\Domain\Models\Airline;
 
 class StoreAirlineController
 {
