@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Lightit\Backoffice\Airline\Domain\Actions;
+use Lightit\Backoffice\Airline\Domain\Models\Airline;
+use Lightit\Backoffice\City\Domain\Models\City;
+
+class ListAirlineCitiesAction
+{
+    /**
+     * @return City|null
+     */
+    public function execute(Airline $airline): ?City
+    {
+        $city = $airline->cities()->first();
+        return $city;
+    }
+}

@@ -6,6 +6,8 @@ namespace Lightit\Backoffice\Flight\App\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
+use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\App\Resources\CityResource;
 
 /**
@@ -20,7 +22,7 @@ class FlightResource extends JsonResource
             'airline_id' => $this->resource->airline_id,
             'departure_city' => CityResource::make($this->whenLoaded('city')),
             'arrival_city' => CityResource::make($this->whenLoaded('city')),
-            'departure_time' => $this->resource->departure_time,
+            'departure_time' => AirlineResource::make($this->whenLoaded('airline')),
             'arrival_time' => $this->resource->arrival_time,
         ];
     }

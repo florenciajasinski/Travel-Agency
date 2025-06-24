@@ -14,6 +14,6 @@ class DeleteAirlineController
     {
         $deleteAirlineAction->execute($airline);
 
-        return response()->json(null, 204);
+        return response()->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
 }
