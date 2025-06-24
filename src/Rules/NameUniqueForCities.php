@@ -14,11 +14,11 @@ class NameUniqueForCities implements ValidationRule
     {
         /** @phpstan-ignore-next-line */
         $city = request()->route('city');
+        /** @var int $cityId */
         $cityId = $city->id ?? null;
         $existingCity = City::where('name', $value)->first();
 
         if ($cityId) {
-            /** @var City|null $currentCity */
             $currentCity = City::query()->find($cityId);
             if ($currentCity && $currentCity->name === $value) {
                 return;
