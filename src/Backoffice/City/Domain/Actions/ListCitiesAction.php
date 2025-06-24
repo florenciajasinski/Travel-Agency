@@ -17,8 +17,8 @@ class ListCitiesAction
     public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
     {
         return QueryBuilder::for(City::class)
-            ->allowedFilters(['name'])
-            ->allowedSorts('name')
+            ->allowedFilters(['name', 'id'])
+            ->allowedSorts('name', 'id')
             ->paginate($perPage, ['*'], 'page', $page);
     }
 }
