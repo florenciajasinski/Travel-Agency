@@ -16,10 +16,9 @@ class FlightResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->resource->id,
             'airline_id' => $this->resource->airline_id,
-            'departure_city_id' => CityResource::make($this->whenLoaded('city')),
-            'arrival_city_id' => CityResource::make($this->whenLoaded('city')),
+            'departure_city' => CityResource::make($this->whenLoaded('city')),
+            'arrival_city' => CityResource::make($this->whenLoaded('city')),
             'departure_time' => $this->resource->departure_time,
             'arrival_time' => $this->resource->arrival_time,
         ];

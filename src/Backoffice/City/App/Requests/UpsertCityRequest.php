@@ -6,16 +6,15 @@ namespace Lightit\Backoffice\City\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Lightit\Backoffice\City\Domain\DataTransferObject\CityDto;
-use Lightit\Backoffice\City\Domain\Models\City;
 
-abstract class BaseCityRequest extends FormRequest
+class UpsertCityRequest extends FormRequest
 {
     public const NAME = 'name';
 
     public function rules(): array
     {
         return [
-            self::NAME => ['required', 'string', 'max:255', 'unique:' . City::class . ',name'],
+            self::NAME => ['required', 'string', 'max:255', 'unique:cities,name'],
         ];
     }
 
