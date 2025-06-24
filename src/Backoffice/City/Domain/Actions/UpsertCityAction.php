@@ -11,18 +11,13 @@ class UpsertCityAction
 {
     public function execute(CityDto $cityDto, City|null $city = null): City
     {
-        if ($city instanceof City) {
-            $city->name = $cityDto->name ?: $city->name;
-            if ($city->isDirty()) {
-                $city->save();
-            }
+        $city ??= new City();
+        $city->name = $cityDto->name ?: $city->name;
 
-            return $city;
+        if ($city->isDirty()) {
+            $city->save();
         }
-        $newCity = new City();
-        $newCity->name = $cityDto->name;
-        $newCity->save();
 
-        return $newCity;
+        return $city;
     }
 }
