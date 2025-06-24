@@ -9,12 +9,13 @@ use Lightit\Backoffice\City\Domain\Models\City;
 
 class UpsertCityAction
 {
-    public function execute(CityDto $cityDto, City|null $city): City
+    public function execute(CityDto $cityDto, City|null $city = null): City
     {
-        if ($city && $city->exists) {
-            $city->name = $cityDto->name;
-            $city->save();
-
+        if ($city instanceof City) {
+            $city->name = $cityDto->name ?: $city->name;
+            if ($city->isDirty()) {
+                $city->save();
+            }
             return $city;
         }
         $newCity = new City();

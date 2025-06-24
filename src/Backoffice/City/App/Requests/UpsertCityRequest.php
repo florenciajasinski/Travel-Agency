@@ -14,9 +14,18 @@ class UpsertCityRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            self::NAME => ['required', 'string', 'max:255', Rule::unique('cities', 'name')],
+
+        $rules = [
+            self::NAME => ['string', 'max:255', Rule::unique('cities', 'name')],
         ];
+
+        if ($this->isMethod('post')) {
+            $rules[self::NAME][] = 'required';
+        } else {
+            $rules[self::NAME][] = 'sometimes';
+        }
+
+        return $rules;
     }
 
     public function toDto(): CityDto
