@@ -14,16 +14,11 @@ class UpsertCityRequest extends FormRequest
 
     public function rules(): array
     {
-
         $rules = [
             self::NAME => ['string', 'max:255', Rule::unique('cities', 'name')],
         ];
 
-        if ($this->isMethod('post')) {
-            $rules[self::NAME][] = 'required';
-        } else {
-            $rules[self::NAME][] = 'sometimes';
-        }
+        $rules[self::NAME][] = $this->isMethod('post') ? 'required' : 'sometimes';
 
         return $rules;
     }

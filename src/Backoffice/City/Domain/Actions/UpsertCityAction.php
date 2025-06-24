@@ -16,6 +16,7 @@ class UpsertCityAction
             if ($city->isDirty()) {
                 $city->save();
             }
+
             return $city;
         }
         $newCity = new City();

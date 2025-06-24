@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Lightit\Backoffice\City\App\Requests\UpsertCityRequest;
 use Lightit\Backoffice\City\App\Resources\CityResource;
 use Lightit\Backoffice\City\Domain\Actions\UpsertCityAction;
-use Lightit\Backoffice\City\Domain\Models\City;
 
 class StoreCityController
 {
