@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @property-read \Lightit\Backoffice\Airline\Domain\Models\Airline $resource
  */
-class AirlineResourceCities extends JsonResource
+class AirlineResourceCity extends JsonResource
 {
     public function toArray(Request $request): array
     {
