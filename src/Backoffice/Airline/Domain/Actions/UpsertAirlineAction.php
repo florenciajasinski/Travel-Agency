@@ -11,7 +11,7 @@ class UpsertAirlineAction
 {
     public function execute(AirlineDto $airlineDto, Airline|null $airline = null): Airline
     {
-        if ($airline) {
+        if ($airline instanceof \Lightit\Backoffice\Airline\Domain\Models\Airline) {
             $airline->name = $airlineDto->name ?: $airline->name;
             $airline->description = $airlineDto->description ?: $airline->description;
             if ($airline->isDirty()) {
