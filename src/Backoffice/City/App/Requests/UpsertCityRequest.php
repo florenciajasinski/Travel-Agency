@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\City\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Lightit\Backoffice\City\Domain\DataTransferObject\CityDto;
 use Illuminate\Validation\Rule;
+use Lightit\Backoffice\City\Domain\DataTransferObject\CityDto;
 
 class UpsertCityRequest extends FormRequest
 {

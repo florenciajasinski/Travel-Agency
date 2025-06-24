@@ -15,7 +15,7 @@ class StoreCityController
     public function __invoke(
         UpsertCityRequest $upsertCityRequest,
         UpsertCityAction $upsertCityAction,
-        ?City $city
+        City|null $city,
     ): JsonResponse {
         $city = $upsertCityAction->execute($upsertCityRequest->toDto(), $city);
 
