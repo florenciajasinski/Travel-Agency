@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Airline\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Lightit\Backoffice\Airline\Domain\DataTransferObject\AirlineDto;
 
 class UpsertAirlineRequest extends FormRequest
@@ -16,7 +17,7 @@ class UpsertAirlineRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            self::NAME => ['string', 'max:255', 'unique:airlines,name'],
+            self::NAME => ['string', 'max:255' , Rule::unique('airlines', 'name')],
             self::DESCRIPTION => ['string', 'max:255'],
         ];
 

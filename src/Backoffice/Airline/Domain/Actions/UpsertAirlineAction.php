@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Lightit\Backoffice\Airline\Domain\Actions;
 
-use Lightit\Backoffice\Airline\Domain\DataTransferObject\AirlineDto;
+
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
+use  Lightit\Backoffice\Airline\Domain\DataTransferObject\AirlineDto;
 
 class UpsertAirlineAction
 {

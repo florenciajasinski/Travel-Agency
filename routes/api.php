@@ -47,7 +47,7 @@ Route::prefix('airlines')
             ->group(static function (): void {
                Route::put('/', UpdateAirlineController::class);
                Route::delete('/', DeleteAirlineController::class);
-               Route::get('/cities', ListAirlineCitiesController::class);
+               Route::get('/{cities}', ListAirlineCitiesController::class);
             });
        Route::get('/', ListAirlinesController::class);
        Route::post('/', StoreAirlineController::class);
