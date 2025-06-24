@@ -3,17 +3,14 @@
 declare(strict_types=1);
 
 namespace Lightit\Backoffice\Airline\Domain\Actions;
+
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
 
 class ListAirlineCitiesAction
 {
-    /**
-     * @return City|null
-     */
-    public function execute(Airline $airline): ?City
+    public function execute(Airline $airline): City|null
     {
-        $city = $airline->cities()->first();
-        return $city;
+        return $airline->cities()->first();
     }
 }

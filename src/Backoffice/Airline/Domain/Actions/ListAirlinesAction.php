@@ -17,8 +17,8 @@ class ListAirlinesAction
     public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
     {
         return QueryBuilder::for(Airline::class)
-            ->allowedFilters(['name' , 'description'])
-            ->allowedSorts('name' , 'description')
+            ->allowedFilters(['name', 'description'])
+            ->allowedSorts('name', 'description')
             ->paginate($perPage, ['*'], 'page', $page);
     }
 }
