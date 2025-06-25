@@ -6,13 +6,14 @@ namespace Lightit\Backoffice\City\Domain\Actions;
 
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
+use Illuminate\Support\Collection;
 
 class ListCityAirlinesAction
 {
     /**
-     * @return \Illuminate\Support\Collection<int, Airline>
+     * @return Collection<int, Airline>
      */
-    public function execute(City $city)
+    public function execute(City $city): Collection
     {
         return $city->airlines;
     }

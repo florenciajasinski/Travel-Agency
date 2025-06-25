@@ -19,7 +19,6 @@ class UpdateAirlineController
     ): JsonResponse {
         $airline = $upsertAirlineAction->execute($upsertAirlineRequest->toDto(), $airline);
 
-        return AirlineResource::make($airline)
-            ->response();
+        return AirlineResource::make($airline)->response();
     }
 }

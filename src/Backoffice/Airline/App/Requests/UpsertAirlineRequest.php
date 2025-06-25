@@ -21,12 +21,12 @@ class UpsertAirlineRequest extends FormRequest
                 'string',
                 'max:255',
                 new NameUniqueForAirlines(),
-                $this->isMethod('post') ? 'required' : 'sometimes',
+                'required',
             ],
             self::DESCRIPTION => [
                 'string',
                 'max:255',
-                $this->isMethod('post') ? 'required' : 'sometimes',
+                'required',
             ],
         ];
     }

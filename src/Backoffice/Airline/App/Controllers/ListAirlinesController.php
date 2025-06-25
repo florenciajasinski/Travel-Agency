@@ -15,7 +15,6 @@ class ListAirlinesController
     ): JsonResponse {
         $airlines = $listAirlinesAction->execute();
 
-        return AirlineResource::collection($airlines)
-            ->response();
+        return AirlineResource::collection($airlines)->response();
     }
 }
