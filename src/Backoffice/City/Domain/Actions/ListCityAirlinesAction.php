@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Lightit\Backoffice\City\Domain\Actions;
 
+use Illuminate\Support\Collection;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\Models\City;
-use Illuminate\Support\Collection;
 
 class ListCityAirlinesAction
 {
