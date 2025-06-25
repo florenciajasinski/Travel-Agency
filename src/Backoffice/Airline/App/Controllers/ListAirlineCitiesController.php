@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Airline\App\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Lightit\Backoffice\Airline\App\Resources\AirlineResourceCity;
 use Lightit\Backoffice\Airline\Domain\Actions\ListAirlineCitiesAction;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
+use Lightit\Backoffice\City\App\Resources\CityResource;
 
 class ListAirlineCitiesController
 {
@@ -15,9 +15,9 @@ class ListAirlineCitiesController
         ListAirlineCitiesAction $listAirlineCitiesAction,
         Airline $airline,
     ): JsonResponse {
-        $city = $listAirlineCitiesAction->execute($airline);
+        $cities = $listAirlineCitiesAction->execute($airline);
 
-        return AirlineResourceCity::collection([$city])
-            ->response();
+        return CityResource::collection($cities)->response();
     }
 }
+

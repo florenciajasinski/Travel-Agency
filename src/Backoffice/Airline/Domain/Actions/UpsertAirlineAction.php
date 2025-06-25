@@ -11,20 +11,14 @@ class UpsertAirlineAction
 {
     public function execute(AirlineDto $airlineDto, Airline|null $airline = null): Airline
     {
-        if ($airline instanceof Airline) {
-            $airline->name = $airlineDto->name ?: $airline->name;
-            $airline->description = $airlineDto->description ?: $airline->description;
-            if ($airline->isDirty()) {
-                $airline->save();
-            }
+        $airline ??= new Airline();
+        $airline->name = $airlineDto->name ?: $airline->name;
+        $airline->description = $airlineDto->description ?: $airline->description;
 
-            return $airline;
+        if ($airline->isDirty()) {
+            $airline->save();
         }
-        $newAirline = new Airline();
-        $newAirline->name = $airlineDto->name;
-        $newAirline->description = $airlineDto->description;
-        $newAirline->save();
 
-        return $newAirline;
+        return $airline;
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Airline\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Lightit\Rules\NameUniqueForAirlines;
 use Lightit\Backoffice\Airline\Domain\DataTransferObject\AirlineDto;
 
 class UpsertAirlineRequest extends FormRequest
@@ -16,20 +16,19 @@ class UpsertAirlineRequest extends FormRequest
 
     public function rules(): array
     {
-        $rules = [
-            self::NAME => ['string', 'max:255', Rule::unique('airlines', 'name')],
-            self::DESCRIPTION => ['string', 'max:255'],
+        return [
+            self::NAME => [
+                'string',
+                'max:255',
+                new NameUniqueForAirlines(),
+                $this->isMethod('post') ? 'required' : 'sometimes',
+            ],
+            self::DESCRIPTION => [
+                'string',
+                'max:255',
+                $this->isMethod('post') ? 'required' : 'sometimes',
+            ],
         ];
-
-        if ($this->isMethod('post')) {
-            $rules[self::NAME][] = 'required';
-            $rules[self::DESCRIPTION][] = 'required';
-        } else {
-            $rules[self::NAME][] = 'sometimes';
-            $rules[self::DESCRIPTION][] = 'sometimes';
-        }
-
-        return $rules;
     }
 
     public function toDto(): AirlineDto

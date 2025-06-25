@@ -9,8 +9,12 @@ use Lightit\Backoffice\City\Domain\Models\City;
 
 class ListAirlineCitiesAction
 {
-    public function execute(Airline $airline): City|null
+    /**
+     * @param Airline $airline
+     * @return \Illuminate\Support\Collection<int, City>
+     */
+    public function execute(Airline $airline)
     {
-        return $airline->cities()->first();
+        return $airline->cities;
     }
 }
