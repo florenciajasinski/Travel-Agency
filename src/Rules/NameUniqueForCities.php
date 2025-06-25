@@ -12,7 +12,7 @@ class NameUniqueForCities implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-         /** @var City $city */
+        /** @var City $city */
         /** @phpstan-ignore-next-line */
         $city = request()->route('city');
         /** @var int $cityId */
