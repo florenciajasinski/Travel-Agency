@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\City\App\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
 use Lightit\Backoffice\City\Domain\Actions\ListCityAirlinesAction;
 use Lightit\Backoffice\City\Domain\Models\City;
-use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
 
 class ListCityAirlinesController
 {

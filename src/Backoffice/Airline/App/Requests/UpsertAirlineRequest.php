@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Airline\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Lightit\Rules\NameUniqueForAirlines;
 use Lightit\Backoffice\Airline\Domain\DataTransferObject\AirlineDto;
+use Lightit\Rules\NameUniqueForAirlines;
 
 class UpsertAirlineRequest extends FormRequest
 {

@@ -20,4 +20,3 @@ class ListAirlineCitiesController
         return CityResource::collection($cities)->response();
     }
 }
-

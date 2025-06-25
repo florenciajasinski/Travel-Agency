@@ -10,7 +10,6 @@ use Lightit\Backoffice\City\Domain\Models\City;
 class ListCityAirlinesAction
 {
     /**
-     * @param City $city
      * @return \Illuminate\Support\Collection<int, Airline>
      */
     public function execute(City $city)
