@@ -23,5 +23,4 @@ class NameUniqueForAirlines implements ValidationRule
             $fail('The airline name must be unique.');
         }
     }
-
 }
