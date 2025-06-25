@@ -15,18 +15,13 @@ class NameUniqueForCities implements ValidationRule
         /** @var City $city */
         /** @phpstan-ignore-next-line */
         $city = request()->route('city');
-        /** @var int $cityId */
+        /** @var int|null $cityId */
         $cityId = $city->id ?? null;
+
         $existingCity = City::where('name', $value)->first();
 
-        if ($cityId) {
-            $currentCity = City::query()->find($cityId);
-            if ($currentCity && $currentCity->name === $value) {
-                return;
-            }
-        }
-        if ($existingCity && $existingCity->id != $cityId) {
-            $fail('The city name must be unique');
+        if ($existingCity && $existingCity->id !== $cityId) {
+            $fail('The city name must be unique.');
         }
     }
 }

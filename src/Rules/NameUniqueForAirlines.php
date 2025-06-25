@@ -14,18 +14,14 @@ class NameUniqueForAirlines implements ValidationRule
     {
         /** @phpstan-ignore-next-line */
         $airline = request()->route('airline');
-        /** @var int $airlineId */
+        /** @var int|null $airlineId */
         $airlineId = $airline->id ?? null;
+
         $existingAirline = Airline::where('name', $value)->first();
 
-        if ($airlineId) {
-            $currentAirline = Airline::query()->find($airlineId);
-            if ($currentAirline && $currentAirline->name === $value) {
-                return;
-            }
-        }
-        if ($existingAirline && $existingAirline->id != $airlineId) {
-            $fail('The airline name must be unique');
+        if ($existingAirline && $existingAirline->id !== $airlineId) {
+            $fail('The airline name must be unique.');
         }
     }
+
 }
