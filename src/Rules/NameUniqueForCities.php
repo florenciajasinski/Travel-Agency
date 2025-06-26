@@ -12,21 +12,17 @@ class NameUniqueForCities implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        /** @var City $city */
+        /** @var City|null $city */
         /** @phpstan-ignore-next-line */
         $city = request()->route('city');
-        /** @var int $cityId */
-        $cityId = $city->id ?? null;
+
         $existingCity = City::where('name', $value)->first();
 
-        if ($cityId) {
-            $currentCity = City::query()->find($cityId);
-            if ($currentCity && $currentCity->name === $value) {
-                return;
-            }
-        }
-        if ($existingCity && $existingCity->id != $cityId) {
-            $fail('The city name must be unique');
+        /** @var int|null $cityId */
+        $cityId = $city->id ?? null;
+
+        if ($existingCity && $existingCity->id !== $cityId) {
+            $fail('The city name must be unique.');
         }
     }
 }

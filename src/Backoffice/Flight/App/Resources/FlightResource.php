@@ -6,6 +6,7 @@ namespace Lightit\Backoffice\Flight\App\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
 use Lightit\Backoffice\City\App\Resources\CityResource;
 
 /**
@@ -17,9 +18,9 @@ class FlightResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-            'airline_id' => $this->resource->airline_id,
-            'departure_city' => CityResource::make($this->whenLoaded('city')),
-            'arrival_city' => CityResource::make($this->whenLoaded('city')),
+            'airline' => AirlineResource::make($this->whenLoaded('airline')),
+            'departure_city' => CityResource::make($this->whenLoaded('departure_city')),
+            'arrival_city' => CityResource::make($this->whenLoaded('arrival_city')),
             'departure_time' => $this->resource->departure_time,
             'arrival_time' => $this->resource->arrival_time,
         ];

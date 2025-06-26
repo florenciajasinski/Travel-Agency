@@ -8,10 +8,18 @@ use Lightit\Backoffice\Flight\App\Controllers\GetFlightController;
 use Lightit\Backoffice\Flight\App\Controllers\ListFlightsController;
 use Lightit\Backoffice\Flight\App\Controllers\StoreFlightController;
 use Lightit\Backoffice\Flight\App\Controllers\UpdateFlightController;
-use Lightit\Backoffice\City\App\Controllers\DeleteCityController;
-use Lightit\Backoffice\City\App\Controllers\ListCitiesController;
 use Lightit\Backoffice\City\App\Controllers\StoreCityController;
 use Lightit\Backoffice\City\App\Controllers\UpdateCityController;
+use Lightit\Backoffice\Airline\App\Controllers\DeleteAirlineController;
+use Lightit\Backoffice\Airline\App\Controllers\ListAirlinesController;
+use Lightit\Backoffice\Airline\App\Controllers\ListAirlineCitiesController;
+use Lightit\Backoffice\Airline\App\Controllers\StoreAirlineController;
+use Lightit\Backoffice\Airline\App\Controllers\UpdateAirlineController;
+use Lightit\Backoffice\City\App\Controllers\DeleteCityController;
+use Lightit\Backoffice\City\App\Controllers\ListCitiesController;
+use Lightit\Backoffice\City\App\Controllers\ListCityAirlinesController;
+use Lightit\Backoffice\City\App\Controllers\GetCityController;
+use Lightit\Backoffice\Airline\App\Controllers\GetAirlineController;
 
 Route::prefix('flights')
     ->group(static function (): void {
@@ -31,7 +39,23 @@ Route::prefix('cities')
             ->group(static function (): void {
                Route::put('/', UpdateCityController::class);
                Route::delete('/', DeleteCityController::class);
+               Route::get('/', GetCityController::class);
+               Route::get('/airlines', ListCityAirlinesController::class);
             });
        Route::get('/', ListCitiesController::class);
        Route::post('/', StoreCityController::class);
     });
+
+Route::prefix('airlines')
+    ->group(static function (): void {
+        Route::prefix('{airline}')
+            ->group(static function (): void {
+               Route::put('/', UpdateAirlineController::class);
+               Route::get('/', GetAirlineController::class);
+               Route::delete('/', DeleteAirlineController::class);
+               Route::get('/cities', ListAirlineCitiesController::class);
+            });
+       Route::get('/', ListAirlinesController::class);
+       Route::post('/', StoreAirlineController::class);
+    });
+

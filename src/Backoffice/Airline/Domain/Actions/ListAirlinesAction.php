@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Lightit\Backoffice\City\Domain\Actions;
+namespace Lightit\Backoffice\Airline\Domain\Actions;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Lightit\Backoffice\City\Domain\Models\City;
+use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class ListCitiesAction
+class ListAirlinesAction
 {
     /**
      * @return LengthAwarePaginator<int, Model>
      */
     public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
     {
-        return QueryBuilder::for(City::class)
-            ->allowedFilters(['name', 'id'])
-            ->allowedSorts('name', 'id')
+        return QueryBuilder::for(Airline::class)
+            ->allowedFilters(['name', 'description'])
+            ->allowedSorts('name', 'description')
             ->paginate($perPage, ['*'], 'page', $page);
     }
 }
