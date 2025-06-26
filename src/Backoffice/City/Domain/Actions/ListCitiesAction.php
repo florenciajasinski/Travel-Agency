@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Lightit\Backoffice\City\Domain\Models\City;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Support\Collection;
 
 class ListCitiesAction
 {
