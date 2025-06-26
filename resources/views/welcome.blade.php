@@ -1,6 +1,6 @@
 <x-flight-layout>
   <x-slot name="heading">
-    Information – Upcoming Flights
+    Upcoming Flights
   </x-slot>
 
   <p class="text-center text-gray-600 mt-6">

@@ -1,14 +1,13 @@
 <x-flight-layout title="Cities" heading="City Management">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-
             <div class="flex gap-2">
-                <select id="airline-filter" class="border px-3 py-2 rounded text-sm" required>
+                <select id="airline-filter" class="border px-3 py-2 rounded text-sm">
                     <option value="">All Airlines</option>
                 </select>
 
                 <button id="filter" class="px-4 py-2 rounded text-sm font-medium bg-blue-600 text-white hover:bg-blue-700">Filter</button>
-                <button id="add-city-btn" class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700"> Add City</button>
+                <button id="add-city-btn" class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700">Add City</button>
             </div>
         </div>
 
@@ -27,10 +26,10 @@
                     <th class="px-4 py-2">Actions</th>
                 </tr>
             </thead>
-            <tbody id="city-table-body">
-            </tbody>
+            <tbody id="city-table-body"></tbody>
         </table>
     </div>
+
     <div id="pagination" class="mt-4 flex justify-center"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
