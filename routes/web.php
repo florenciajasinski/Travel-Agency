@@ -9,7 +9,7 @@ Route::get('invalid', static fn() => throw new InvalidActionException("Is not va
 
 Route::get('/', static fn() => view('welcome'));
 
-Route::get('/cities-view', function () {
+Route::get('/cities', function () {
     return view('cities.index');
 });
 

@@ -27,7 +27,7 @@
         Information
     </a>
 
-    <a href="/cities-view" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
+    <a href="/cities" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
         Cities
     </a>
 
