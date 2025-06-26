@@ -10,6 +10,7 @@ use Lightit\Backoffice\Pagination\PaginationDto;
 class ListCityRequest extends FormRequest
 {
     public const PAGE = 'page';
+
     public const PER_PAGE = 'per_page';
 
     public function rules(): array

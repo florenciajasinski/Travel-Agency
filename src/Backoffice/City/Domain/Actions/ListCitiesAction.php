@@ -21,8 +21,7 @@ class ListCitiesAction
             ->allowedFilters(['name', 'id'])
             ->allowedSorts('name', 'id')
             ->defaultSort('id');
+
         return $query->paginate($paginationDto->perPage, ['*'], 'page', $paginationDto->page);
     }
-
-
 }
