@@ -15,8 +15,11 @@ class ListCitiesController
     public function __invoke(
         ListCitiesAction $listCitiesAction,
     ): JsonResponse {
-        $cities = $listCitiesAction->execute();
-
+        /** @phpstan-ignore-next-line */
+        $page = (int) request()->query('page', 1);
+        /** @phpstan-ignore-next-line */
+        $perPage = (int) request()->query('per_page', 15);
+        $cities = $listCitiesAction->execute(perPage: $perPage, page: $page);
         return CityResource::collection($cities)
             ->response();
     }
