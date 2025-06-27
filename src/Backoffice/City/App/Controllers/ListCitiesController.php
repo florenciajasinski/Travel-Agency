@@ -6,18 +6,19 @@ namespace Lightit\Backoffice\City\App\Controllers;
 
 use Illuminate\Http\JsonResponse;
 
-use Lightit\Backoffice\City\App\Requests\ListCityRequest;
+
 
 use Lightit\Backoffice\City\App\Resources\CityResource;
 use Lightit\Backoffice\City\Domain\Actions\ListCitiesAction;
+use Lightit\Backoffice\Pagination\PaginationRequest;
 
 class ListCitiesController
 {
     public function __invoke(
         ListCitiesAction $listCitiesAction,
-        ListCityRequest $listCityRequest,
+        PaginationRequest $paginationRequest
     ): JsonResponse {
-        $cities = $listCitiesAction->execute($listCityRequest->toDto());
+        $cities = $listCitiesAction->execute($paginationRequest->toDto());
 
         return CityResource::collection($cities)->response();
     }

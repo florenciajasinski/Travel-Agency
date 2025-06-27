@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lightit\Backoffice\City\App\Requests;
+namespace Lightit\Backoffice\Pagination;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Lightit\Backoffice\Pagination\PaginationDto;
 
-class ListCityRequest extends FormRequest
+class PaginationRequest extends FormRequest
 {
     public const PAGE = 'page';
 
