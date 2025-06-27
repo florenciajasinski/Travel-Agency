@@ -16,7 +16,7 @@ class ListCitiesController
 {
     public function __invoke(
         ListCitiesAction $listCitiesAction,
-        PaginationRequest $paginationRequest
+        PaginationRequest $paginationRequest,
     ): JsonResponse {
         $cities = $listCitiesAction->execute($paginationRequest->toDto());
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\Pagination;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Lightit\Backoffice\Pagination\PaginationDto;
 
 class PaginationRequest extends FormRequest
 {

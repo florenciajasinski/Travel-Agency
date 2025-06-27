@@ -13,7 +13,7 @@ class ListAirlinesController
 {
     public function __invoke(
         ListAirlinesAction $listAirlinesAction,
-        PaginationRequest $paginationRequest
+        PaginationRequest $paginationRequest,
     ): JsonResponse {
         $airlines = $listAirlinesAction->execute($paginationRequest->toDto());
 
