@@ -82,10 +82,10 @@
             });
 
             document.getElementById('save_airline_btn').addEventListener('click', () => {
-                const errorDiv = document.getElementById('airline_form_error');
+                const errorMessage = document.getElementById('airline_form_error');
                 const name = document.getElementById('new_airline_name').value;
                 const description = document.getElementById('new_airline_description').value;
-                errorDiv.textContent = '';
+                errorMessage.textContent = '';
 
                 fetch('/api/airlines', {
                     method: 'POST',
@@ -111,7 +111,7 @@
                     loadAirlines(currentPage);
                 })
                 .catch(error => {
-                    errorDiv.textContent = error.message;
+                    errorMessage.textContent = error.message;
                 });
             });
         });
@@ -212,7 +212,7 @@
                 const flightsCell = row.querySelector('.flights-cell');
                 const actionsDiv = row.querySelector('.action-buttons');
                 const editActionsDiv = row.querySelector('.edit-buttons');
-                const errorMsg = row.querySelector('.error-msg');
+                const errorMessage = row.querySelector('.error-msg');
 
                 idCell.textContent = airline.id;
                 nameSpan.textContent = airline.name;
@@ -243,12 +243,9 @@
                 });
 
                 row.querySelector('.save-btn').addEventListener('click', () => {
-                    const newName = nameInput.value.trim();
-                    const newDesc = descInput.value.trim();
-
-                    errorMsg.textContent = '';
-                    nameInput.classList.remove('border-red-500');
-                    descInput.classList.remove('border-red-500');
+                    const newName = nameInput.value;
+                    const newDesc = descInput.value;
+                    errorMessage.textContent = '';
 
                     fetch(`/api/airlines/${airline.id}`, {
                         method: 'PUT',
@@ -260,9 +257,11 @@
                     })
                     .then(async res => {
                         if (!res.ok) {
-                            const data = await res.json();
-                            const fields = data.error?.fields || {};
-                            throw new Error(Object.values(fields).flat().join(', ') || data.error?.message || 'Unknown error');
+                            return res.json().then(({ error }) => {
+                            const fields = error?.fields;
+                            const message = Object.values(fields);
+                            throw new Error(message);
+                            });
                         }
                         return res.json();
                     })
@@ -270,7 +269,7 @@
                         loadAirlines(currentPage);
                     })
                     .catch(err => {
-                        errorMsg.textContent = err.message;
+                        errorMessage.textContent = err.message;
                     });
                 });
 
