@@ -9,6 +9,6 @@ Route::get('invalid', static fn() => throw new InvalidActionException("Is not va
 
 Route::get('/', static fn() => view('welcome'));
 
-Route::get('/login', static fn() => view('welcome'))->name('login');
-
-
+Route::get('/cities', function () {
+    return view('cities.index');
+});

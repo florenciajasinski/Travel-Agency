@@ -17,6 +17,9 @@ class CityResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'name' => $this->resource->name,
+            'incoming_flights' => $this->resource->flightsArrival()->count(),
+            'outgoing_flights' => $this->resource->flightsDeparture()->count(),
+
         ];
     }
 }
