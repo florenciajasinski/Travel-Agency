@@ -12,7 +12,3 @@ Route::get('/', static fn() => view('welcome'));
 Route::get('/cities', function () {
     return view('cities.index');
 });
-
-Route::get('/airlines', function () {
-    return view('airlines.index');
-});

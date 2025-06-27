@@ -15,16 +15,11 @@ class ListAirlinesAction
     /**
      * @return LengthAwarePaginator<int, Model>
      */
-    public function execute(PaginationDto $paginationDto): LengthAwarePaginator
+    public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
     {
-        $perPage = $paginationDto->perPage;
-        $page = $paginationDto->page;
-
-        $query = QueryBuilder::for(Airline::class)
-            ->allowedFilters(['name', 'description', 'id'])
-            ->allowedSorts('name', 'description', 'id')
-            ->defaultSort('id');
-
-        return $query->paginate($perPage, ['*'], 'page', $page);
+        return QueryBuilder::for(Airline::class)
+            ->allowedFilters(['name', 'description'])
+            ->allowedSorts('name', 'description')
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 }
