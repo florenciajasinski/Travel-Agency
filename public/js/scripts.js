@@ -12,24 +12,27 @@ $(document).ready(function () {
 
   $(document).on('click', '#save_city_btn', function () {
     const name = $('#new_city_name').val();
+    const errorMessage = $('#error_message');
     $.ajax({
       url: '/api/cities',
       method: 'POST',
       data: { name },
       success: function () {
-        $('#new_city_name').val('');
-        $('#create_city_form').hide();
-        loadCities(currentPage);
+      $('#new_city_name').val('');
+      $('#create_city_form').addClass('hidden');
+      errorMessage.text('').hide();
+      loadCities(currentPage);
       },
-      error: function () {
-        alert('Error: The city name must be unique.');
+      error: function (xhr) {
+        let message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
+        errorMessage.text(message).show();
       }
     });
   });
 
   $(document).on('click', '#filter', function () {
     currentAirlineId = $('#airline_filter').val();
-    loadCities(1);
+    loadCities(currentPage);
   });
 
   $(document).on('click', '.delete-btn', function () {
@@ -38,8 +41,6 @@ $(document).ready(function () {
       url: `/api/cities/${id}`,
       type: 'DELETE',
       success: function () {
-        cities = cities.filter(city => city.id !== id);
-        renderTable();
         loadCities(currentPage);
       }
     });
@@ -58,23 +59,25 @@ $(document).ready(function () {
   });
 
   $(document).on('click', '.save-edit-btn', function () {
-    const id = $(this).data('id');
-    const parentDiv = $(this).parent();
-    const new_name = parentDiv.find('.edit-name').val();
+  const id = $(this).data('id');
+  const parentDiv = $(this).parent();
+  const newName = parentDiv.find('.edit-name').val();
+  const errorSpan = $('<span class="text-red-600 text-sm ml-2 error-message"></span>');
 
     $.ajax({
       url: `/api/cities/${id}`,
       method: 'PUT',
-      data: { name: new_name },
+      data: { name: newName },
       success: function () {
         loadCities(currentPage);
       },
-      error: function () {
-        alert('Error: The city name must be unique.');
+      error: function (xhr) {
+        const message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
+        parentDiv.append(errorSpan.text(message));
       }
     });
   });
-});
+
 
 function loadCities(page = 1) {
   currentPage = page;
@@ -163,3 +166,5 @@ function renderPagination(pagination) {
     $('#pagination').append(button);
   }
 }
+
+});

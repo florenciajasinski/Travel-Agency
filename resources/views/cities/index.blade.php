@@ -14,6 +14,7 @@
         <div id="create_city_form" class="hidden mb-6">
             <input type="text" id="new_city_name" class="border px-3 py-2 rounded text-sm w-full mb-2" />
             <button id="save_city_btn" class="px-4 py-2 bg-green-600 text-white rounded text-sm">Save</button>
+            <div id="error_message" class="text-red-600 mt-2 hidden"></div>
         </div>
 
         <table class="table-auto w-full bg-white shadow-md rounded text-sm">

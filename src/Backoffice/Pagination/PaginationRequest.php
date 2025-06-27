@@ -16,15 +16,15 @@ class PaginationRequest extends FormRequest
     {
         return [
             self::PAGE => [
+                'sometimes',
                 'integer',
                 'min:1',
-                'sometimes',
             ],
             self::PER_PAGE => [
+                'sometimes',
                 'integer',
                 'min:1',
                 'max:100',
-                'sometimes',
             ],
         ];
     }
@@ -39,11 +39,11 @@ class PaginationRequest extends FormRequest
 
     public function page(): int
     {
-        return (int) $this->query('page', 1);
+        return $this->integer(self::PAGE, 1);
     }
 
     public function perPage(): int
     {
-        return (int) $this->query('per_page', 15);
+        return $this->integer(self::PER_PAGE, 15);
     }
 }
