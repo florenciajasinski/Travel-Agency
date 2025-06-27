@@ -1,10 +1,10 @@
 let cities = [];
-let current_airline_id = '';
-let current_page = 1;
+let currentAirlineId = '';
+let currentPage = 1;
 
 $(document).ready(function () {
-  load_cities(current_page);
-  load_airlines();
+  loadCities(currentPage);
+  loadAirlines();
 
   $(document).on('click', '#add_city_btn', function () {
     $('#create_city_form').toggleClass('hidden');
@@ -19,7 +19,7 @@ $(document).ready(function () {
       success: function () {
         $('#new_city_name').val('');
         $('#create_city_form').hide();
-        load_cities(current_page);
+        loadCities(currentPage);
       },
       error: function () {
         alert('Error: The city name must be unique.');
@@ -28,8 +28,8 @@ $(document).ready(function () {
   });
 
   $(document).on('click', '#filter', function () {
-    current_airline_id = $('#airline_filter').val();
-    load_cities(1);
+    currentAirlineId = $('#airline_filter').val();
+    loadCities(1);
   });
 
   $(document).on('click', '.delete-btn', function () {
@@ -39,35 +39,35 @@ $(document).ready(function () {
       type: 'DELETE',
       success: function () {
         cities = cities.filter(city => city.id !== id);
-        render_table();
-        load_cities(current_page);
+        renderTable();
+        loadCities(currentPage);
       }
     });
   });
 
   $(document).on('click', '.edit-btn', function () {
-    const parent_div = $(this).parent();
-    parent_div.hide();
-    parent_div.siblings('.edit-form').show();
+    const parentDiv = $(this).parent();
+    parentDiv.hide();
+    parentDiv.siblings('.edit-form').show();
   });
 
   $(document).on('click', '.cancel-edit-btn', function () {
-    const parent_div = $(this).parent();
-    parent_div.hide();
-    parent_div.siblings('.action-buttons').show();
+    const parentDiv = $(this).parent();
+    parentDiv.hide();
+    parentDiv.siblings('.action-buttons').show();
   });
 
   $(document).on('click', '.save-edit-btn', function () {
     const id = $(this).data('id');
-    const parent_div = $(this).parent();
-    const new_name = parent_div.find('.edit-name').val();
+    const parentDiv = $(this).parent();
+    const new_name = parentDiv.find('.edit-name').val();
 
     $.ajax({
       url: `/api/cities/${id}`,
       method: 'PUT',
       data: { name: new_name },
       success: function () {
-        load_cities(current_page);
+        loadCities(currentPage);
       },
       error: function () {
         alert('Error: The city name must be unique.');
@@ -76,16 +76,16 @@ $(document).ready(function () {
   });
 });
 
-function load_cities(page = 1) {
-  current_page = page;
+function loadCities(page = 1) {
+  currentPage = page;
 
-  if (current_airline_id) {
+  if (currentAirlineId) {
     $.ajax({
-      url: `/api/airlines/${current_airline_id}/cities`,
+      url: `/api/airlines/${currentAirlineId}/cities`,
       method: 'GET',
       success: function (response) {
         cities = response.data;
-        render_table();
+        renderTable();
       },
       error: function () {
         alert('Error loading cities for the selected airline');
@@ -98,8 +98,8 @@ function load_cities(page = 1) {
       data: { page },
       success: function (response) {
         cities = response.data;
-        render_table();
-        render_pagination(response.meta);
+        renderTable();
+        renderPagination(response.meta);
       },
       error: function () {
         alert('Error loading cities');
@@ -108,7 +108,7 @@ function load_cities(page = 1) {
   }
 }
 
-function load_airlines() {
+function loadAirlines() {
   $.ajax({
     url: '/api/airlines',
     method: 'GET',
@@ -126,7 +126,7 @@ function load_airlines() {
   });
 }
 
-function render_table() {
+function renderTable() {
   $('#city_table_body').empty();
 
   for (const city of cities) {
@@ -153,12 +153,12 @@ function render_table() {
   }
 }
 
-function render_pagination(pagination) {
+function renderPagination(pagination) {
   $('#pagination').empty();
   for (let i = 1; i <= pagination.last_page; i++) {
     const button = $('<button></button>').text(i).addClass('px-2 py-1 border rounded mx-1');
     button.on('click', function () {
-      load_cities(i);
+      loadCities(i);
     });
     $('#pagination').append(button);
   }
