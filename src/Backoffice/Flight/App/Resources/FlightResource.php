@@ -18,9 +18,9 @@ class FlightResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-            'airline' => AirlineResource::make($this->whenLoaded('airline')),
-            'departure_city' => CityResource::make($this->whenLoaded('departure_city')),
-            'arrival_city' => CityResource::make($this->whenLoaded('arrival_city')),
+            'airline_name' => $this->resource->airline->name,
+            'departure_city_name' => $this->resource->departureCity->name,
+            'arrival_city_name' => $this->resource->arrivalCity->name,
             'departure_time' => $this->resource->departure_time,
             'arrival_time' => $this->resource->arrival_time,
         ];

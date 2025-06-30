@@ -19,6 +19,7 @@ class ListFlightsAction
         return QueryBuilder::for(Flight::class)
             ->allowedFilters(['departure_city_id', 'arrival_city_id', 'departure_time', 'arrival_time'])
             ->allowedSorts('departure_time', 'arrival_time')
+            ->with(['departureCity', 'arrivalCity', 'airline'])
             ->paginate();
     }
 }
