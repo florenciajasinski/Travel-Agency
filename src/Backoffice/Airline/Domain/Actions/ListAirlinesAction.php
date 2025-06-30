@@ -8,17 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Spatie\QueryBuilder\QueryBuilder;
+use Lightit\Backoffice\Pagination\PaginationDto;
 
 class ListAirlinesAction
 {
     /**
      * @return LengthAwarePaginator<int, Model>
      */
-    public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
+    public function execute(PaginationDto $paginationDto): LengthAwarePaginator
     {
         return QueryBuilder::for(Airline::class)
             ->allowedFilters(['name', 'description'])
             ->allowedSorts('name', 'description')
-            ->paginate($perPage, ['*'], 'page', $page);
+            ->defaultSort('id')
+            ->paginate($paginationDto->perPage, ['*'], 'page', $paginationDto->page);
     }
 }

@@ -30,19 +30,15 @@
             <tbody id="airline_table_body">
                 <tr id="airline_row_template" class="hidden">
                     <td class="px-4 py-2 id-cell"></td>
-
                     <td class="px-4 py-2">
                         <span class="name-cell"></span>
                         <input type="text" class="edit-name hidden border px-2 py-1 rounded w-full text-sm" />
                     </td>
-
                     <td class="px-4 py-2">
                         <span class="description-cell"></span>
                         <textarea class="edit-desc hidden border px-2 py-1 rounded w-full text-sm" rows="3"></textarea>
                     </td>
-
                     <td class="px-4 py-2 flights-cell"></td>
-
                     <td class="px-4 py-2">
                         <div class="action-buttons flex gap-2">
                             <button class="edit-btn text-blue-600 hover:underline">Edit</button>
@@ -55,7 +51,6 @@
                         </div>
                     </td>
                 </tr>
-
             </tbody>
         </table>
     </div>
@@ -86,6 +81,8 @@
                 const name = document.getElementById('new_airline_name').value;
                 const description = document.getElementById('new_airline_description').value;
                 errorMessage.textContent = '';
+                name.textContent = '';
+                description.textContent = '';
 
                 fetch('/api/airlines', {
                     method: 'POST',
@@ -105,10 +102,12 @@
                     }
                     return res.json();
                 })
-
                 .then(() => {
                     document.getElementById('create_airline_form').classList.add('hidden');
                     loadAirlines(currentPage);
+                    document.getElementById('new_airline_name').value = '';
+                    document.getElementById('new_airline_description').value = '';
+                    errorMessage.textContent = '';
                 })
                 .catch(error => {
                     errorMessage.textContent = error.message;
@@ -189,6 +188,7 @@
                 container.appendChild(btn);
             }
         }
+
         function renderTable() {
             const tbody = document.getElementById('airline_table_body');
             const template = document.getElementById('airline_row_template');
@@ -198,8 +198,7 @@
                     row.remove();
                 }
             }
-
-            airlines.forEach(airline => {
+            airlines.forEach(function(airline) {
                 const row = template.cloneNode(true);
                 row.id = '';
                 row.classList.remove('hidden');
@@ -210,8 +209,8 @@
                 const descSpan = row.querySelector('.description-cell');
                 const descInput = row.querySelector('.edit-desc');
                 const flightsCell = row.querySelector('.flights-cell');
-                const actionsDiv = row.querySelector('.action-buttons');
-                const editActionsDiv = row.querySelector('.edit-buttons');
+                const actions = row.querySelector('.action-buttons');
+                const editActions = row.querySelector('.edit-buttons');
                 const errorMessage = row.querySelector('.error-msg');
 
                 idCell.textContent = airline.id;
@@ -221,28 +220,33 @@
                 descInput.value = airline.description;
                 flightsCell.textContent = airline.flights_count;
 
-                row.querySelector('.delete-btn').addEventListener('click', () => {
+                const deleteBtn = row.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', function() {
                     fetch(`/api/airlines/${airline.id}`, {
                         method: 'DELETE',
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(() => loadAirlines(currentPage));
+                    }).then(function() {
+                        loadAirlines(currentPage);
+                    });
                 });
 
-                row.querySelector('.edit-btn').addEventListener('click', () => {
+                const editBtn = row.querySelector('.edit-btn');
+                editBtn.addEventListener('click', function() {
                     nameSpan.classList.add('hidden');
                     nameInput.classList.remove('hidden');
                     descSpan.classList.add('hidden');
                     descInput.classList.remove('hidden');
-                    actionsDiv.classList.add('hidden');
-                    editActionsDiv.classList.remove('hidden');
+                    actions.classList.add('hidden');
+                    editActions.classList.remove('hidden');
                 });
 
-                row.querySelector('.cancel-btn').addEventListener('click', () => {
+                const cancelBtn = row.querySelector('.cancel-btn');
+                cancelBtn.addEventListener('click', function() {
                     loadAirlines(currentPage);
                 });
 
-                row.querySelector('.save-btn').addEventListener('click', () => {
+                const saveBtn = row.querySelector('.save-btn');
+                saveBtn.addEventListener('click', function() {
                     const newName = nameInput.value;
                     const newDesc = descInput.value;
                     errorMessage.textContent = '';
@@ -253,32 +257,30 @@
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify({ name: newName, description: newDesc })
+                        body: JSON.stringify({
+                            name: newName,
+                            description: newDesc
+                        })
                     })
-                    .then(async res => {
+                    .then(function(res) {
                         if (!res.ok) {
-                            return res.json().then(({ error }) => {
-                            const fields = error?.fields;
-                            const message = Object.values(fields);
-                            throw new Error(message);
+                            return res.json().then(function(data) {
+                                const fields = data.error?.fields;
+                                const message = Object.values(fields);
+                                throw new Error(message);
                             });
                         }
                         return res.json();
                     })
-                    .then(() => {
+                    .then(function() {
                         loadAirlines(currentPage);
                     })
-                    .catch(err => {
+                    .catch(function(err) {
                         errorMessage.textContent = err.message;
                     });
                 });
-
                 tbody.appendChild(row);
             });
         }
-
-
-
-
     </script>
 </x-flight-layout>
