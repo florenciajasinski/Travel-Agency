@@ -20,3 +20,8 @@ Route::get('/airlines', function () {
 Route::get('/flights', function () {
     return view('flights.index');
 });
+
+Route::get('/flights/{id}/edit', function ($id) {
+    return view('flights.edit', ['flightId' => $id]);
+});
+

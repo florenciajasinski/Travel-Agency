@@ -6,14 +6,14 @@
         </select>
     </div>
 
-    <div class="flex flex-col hidden" id="origin_wrapper">
+    <div class="flex flex-col hidden" id="origin_select">
         <label for="origin_city" class="text-gray-700 font-semibold mb-1">Origin</label>
         <select id="origin_city" class="border px-3 py-2 rounded text-sm">
             <option value="">Select Origin</option>
         </select>
     </div>
 
-    <div class="flex flex-col hidden" id="destination_wrapper">
+    <div class="flex flex-col hidden" id="destination_select">
         <label for="destination_city" class="text-gray-700 font-semibold mb-1">Destination</label>
         <select id="destination_city" class="border px-3 py-2 rounded text-sm">
             <option value="">Select Destination</option>

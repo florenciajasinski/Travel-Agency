@@ -29,178 +29,186 @@
                     <th class="px-4 py-2">Actions</th>
                 </tr>
             </thead>
-            <tbody id="flight_table_body"></tbody>
+            <tbody id="flight_table_body">
+                <tr id="flight_row_template" class="hidden">
+                    <td class="px-4 py-2 id-cell"></td>
+                    <td class="px-4 py-2 origin-cell"></td>
+                    <td class="px-4 py-2 destination-cell"></td>
+                    <td class="px-4 py-2 airline-cell"></td>
+                    <td class="px-4 py-2 departure-cell"></td>
+                    <td class="px-4 py-2 arrival-cell"></td>
+                    <td class="px-4 py-2">
+                        <button class="edit-btn text-blue-600 hover:underline">Edit</button>
+                        <button class="delete-btn text-red-600 hover:underline">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let cities = [];
+        let airlines = [];
 
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAirlines();
+            loadFlights();
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-let cities = [];
-let airlines = [];
+            document.getElementById('add_flight_btn').addEventListener('click', () => {
+                document.getElementById('create_flight_form').classList.toggle('hidden');
+            });
 
-document.addEventListener('DOMContentLoaded', () => {
-    initFlightForm();
-    loadAirlines();
-    loadFlights();
-});
-
-function initFlightForm() {
-    document.getElementById('add_flight_btn').addEventListener('click', FlightForm);
-    document.getElementById('airline').addEventListener('change', loadCitiesByAirline);
-    document.getElementById('origin_city').addEventListener('change', updateDestinations);
-    document.getElementById('save_flight_btn').addEventListener('click', createFlight);
-}
-
-function FlightForm() {
-    document.getElementById('create_flight_form').classList.toggle('hidden');
-}
-
-function showError(message) {
-    const errorMessage = document.getElementById('flight_form_error');
-    errorMessage.textContent = message;
-}
-
-function clearFlightForm() {
-    document.getElementById('origin_city').value = '';
-    document.getElementById('destination_city').value = '';
-    document.getElementById('airline').value = '';
-    document.getElementById('departure_date').value = '';
-    document.getElementById('arrival_date').value = '';
-    document.getElementById('flight_form_error').textContent = '';
-    document.getElementById('create_flight_form').classList.add('hidden');
-}
-
-function loadAirlines() {
-    axios.get('/api/airlines').then(res => {
-        airlines = res.data.data;
-        const select = document.getElementById('airline');
-        select.innerHTML = '<option value="">Select Airline</option>';
-        airlines.forEach(airline => {
-            const option = document.createElement('option');
-            option.value = airline.id;
-            option.textContent = airline.name;
-            select.appendChild(option);
+            document.getElementById('airline').addEventListener('change', loadCitiesByAirline);
+            document.getElementById('origin_city').addEventListener('change', updateDestinations);
+            document.getElementById('save_flight_btn').addEventListener('click', createFlight);
         });
-    });
-}
 
-function loadCitiesByAirline() {
-    const airlineId = document.getElementById('airline').value;
-    const originSelect = document.getElementById('origin_city');
-    const destinationSelect = document.getElementById('destination_city');
-
-    if (!airlineId) {
-        originSelect.classList.add('hidden');
-        destinationSelect.classList.add('hidden');
-        return;
-    }
-
-    axios.get(`/api/airlines/${airlineId}/cities`).then(res => {
-        cities = res.data.data;
-        citySelect('origin_city', cities);
-        updateDestinations();
-        originSelect.classList.remove('hidden');
-        destinationSelect.classList.remove('hidden');
-    });
-}
-
-function citySelect(selectId, citiesList) {
-    const selectElement = document.getElementById(selectId);
-    let defaultText = 'Select City';
-    if (selectId === 'origin_city') {
-        defaultText = 'Select Origin';
-    } else if (selectId === 'destination_city') {
-        defaultText = 'Select Destination';
-    }
-
-    selectElement.innerHTML = '<option value="">' + defaultText + '</option>';
-
-    for (let i = 0; i < citiesList.length; i++) {
-        const city = citiesList[i];
-        const option = document.createElement('option');
-        option.value = city.id;
-        option.textContent = city.name;
-        selectElement.appendChild(option);
-    }
-}
-
-function updateDestinations() {
-    const originSelect = document.getElementById('origin_city');
-    const selectedOriginId = originSelect.value;
-
-    const destinationCities = [];
-    for (let i = 0; i < cities.length; i++) {
-        if (cities[i].id !== selectedOriginId) {
-            destinationCities.push(cities[i]);
+        function loadAirlines() {
+            axios.get('/api/airlines').then(res => {
+                airlines = res.data.data;
+                const select = document.getElementById('airline');
+                select.innerHTML = '<option value="">Select Airline</option>';
+                airlines.forEach(airline => {
+                    const option = document.createElement('option');
+                    option.value = airline.id;
+                    option.textContent = airline.name;
+                    select.appendChild(option);
+                });
+            });
         }
-    }
-    citySelect('destination_city', destinationCities);
-}
 
+        function loadCitiesByAirline() {
+            const airlineId = document.getElementById('airline').value;
+            const originSelect = document.getElementById('origin_select');
+            const destinationSelect = document.getElementById('destination_select');
 
-function createFlight() {
-    const departureCity = document.getElementById('origin_city').value;
-    const arrivalCity = document.getElementById('destination_city').value;
-    const airline = document.getElementById('airline').value;
-    const departureTime = document.getElementById('departure_date').value;
-    const arrivalTime = document.getElementById('arrival_date').value;
+            if (!airlineId) {
+                originSelect.classList.add('hidden');
+                destinationSelect.classList.add('hidden');
+                return;
+            }
 
-    showError('');
+            axios.get(`/api/airlines/${airlineId}/cities`).then(res => {
+                cities = res.data.data;
 
-    axios.post('/api/flights', {
-        departure_city_id: departureCity,
-        arrival_city_id: arrivalCity,
-        airline_id: airline,
-        departure_time: departureTime,
-        arrival_time: arrivalTime
-    })
-    .then(res => {
-        if (res.data.error && res.data.error.fields) {
-            const fields = res.data.error.fields;
-            const message = Object.values(fields).join(', ');
-            showError(message);
-            return;
+                const origin = document.getElementById('origin_city');
+                origin.innerHTML = '<option value="">Select Origin</option>';
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.id;
+                    option.textContent = city.name;
+                    origin.appendChild(option);
+                });
+
+                updateDestinations();
+                originSelect.classList.remove('hidden');
+                destinationSelect.classList.remove('hidden');
+            });
         }
-        clearFlightForm();
-        loadFlights();
-    })
-    .catch(error => {
-        showError(error.response.data.error.message);
-    });
-}
 
-function loadFlights() {
-    axios.get('/api/flights').then(res => {
-        const tbody = document.getElementById('flight_table_body');
-        tbody.innerHTML = '';
-        res.data.data.forEach(flight => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-4 py-2">${flight.id}</td>
-                <td class="px-4 py-2">${flight.departure_city_name}</td>
-                <td class="px-4 py-2">${flight.arrival_city_name}</td>
-                <td class="px-4 py-2">${flight.airline_name}</td>
-                <td class="px-4 py-2">${flight.departure_time}</td>
-                <td class="px-4 py-2">${flight.arrival_time}</td>
-                <td class="px-4 py-2">
-                    <button onclick="deleteFlight(${flight.id})" class="text-red-600 hover:underline">Delete</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
+        function updateDestinations() {
+            const originId = document.getElementById('origin_city').value;
+            const dest = document.getElementById('destination_city');
+            dest.innerHTML = '<option value="">Select Destination</option>';
+
+            cities.filter(c => c.id != originId).forEach(city => {
+                const option = document.createElement('option');
+                option.value = city.id;
+                option.textContent = city.name;
+                dest.appendChild(option);
+            });
+        }
+
+        function createFlight() {
+            const errorMessage = document.getElementById('flight_form_error');
+            const departureCity = document.getElementById('origin_city').value;
+            const arrivalCity = document.getElementById('destination_city').value;
+            const airline = document.getElementById('airline').value;
+            const departureTime = document.getElementById('departure_date').value;
+            const arrivalTime = document.getElementById('arrival_date').value;
+
+            errorMessage.textContent = '';
+
+            axios.post('/api/flights', {
+                departure_city_id: departureCity,
+                arrival_city_id: arrivalCity,
+                airline_id: airline,
+                departure_time: departureTime,
+                arrival_time: arrivalTime
+            })
+            .then(res => {
+                if (res.data.status === 'error') {
+                    errorMessage.textContent = res.data.message;
+                    return;
+                }
+                document.getElementById('origin_city').value = '';
+                document.getElementById('destination_city').value = '';
+                document.getElementById('airline').value = '';
+                document.getElementById('departure_date').value = '';
+                document.getElementById('arrival_date').value = '';
+                document.getElementById('create_flight_form').classList.add('hidden');
+                document.getElementById('flight_form_error').textContent = '';
+                loadFlights();
+            })
+            .catch(function (err) {
+                const errorMessage = document.getElementById('flight_form_error');
+                if (err.response?.status === 422) {
+                    if (err.response?.data?.error?.fields) {
+                        const firstErrorList = Object.values(err.response.data.error.fields)[0];
+                        if (Array.isArray(firstErrorList)) {
+                            errorMessage.textContent = firstErrorList[0];
+                            return;
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadFlights() {
+        axios.get('/api/flights').then(res => {
+            const tbody = document.getElementById('flight_table_body');
+            const template = document.getElementById('flight_row_template');
+
+            const rows = tbody.querySelectorAll('tr');
+            for (const row of rows) {
+                if (row.id !== 'flight_row_template') {
+                    row.remove();
+                }
+            }
+            res.data.data.forEach(flight => {
+                const row = template.cloneNode(true);
+                row.id = '';
+                row.classList.remove('hidden');
+
+                row.querySelector('.id-cell').textContent = flight.id;
+                row.querySelector('.origin-cell').textContent = flight.departure_city_name;
+                row.querySelector('.destination-cell').textContent = flight.arrival_city_name;
+                row.querySelector('.airline-cell').textContent = flight.airline_name;
+                row.querySelector('.departure-cell').textContent = flight.departure_time;
+                row.querySelector('.arrival-cell').textContent = flight.arrival_time;
+
+                const deleteBtn = row.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => deleteFlight(flight.id));
+
+                const editBtn = row.querySelector('.edit-btn');
+                editBtn.addEventListener('click', () => {
+                    window.location.href = `/flights/${flight.id}/edit`;
+                });
+
+                tbody.appendChild(row);
+            });
         });
-    });
-}
+    }
 
-function deleteFlight(id) {
-    if (!confirm('Are you sure you want to delete this flight?')) return;
-    axios.delete(`/api/flights/${id}`).then(() => {
-        loadFlights();
-    }).catch(error => {
-        showError(error.message);
-    });
-}
-</script>
 
+        function deleteFlight(id) {
+            if (!confirm('Are you sure you want to delete this flight?')) return;
+            axios.delete(`/api/flights/${id}`).then(() => {
+                loadFlights();
+            }).catch(error => {
+                document.getElementById('flight_form_error').textContent = error.message;
+            });
+        }
+    </script>
 </x-flight-layout>
