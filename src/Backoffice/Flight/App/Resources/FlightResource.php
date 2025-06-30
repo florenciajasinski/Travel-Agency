@@ -6,8 +6,6 @@ namespace Lightit\Backoffice\Flight\App\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Lightit\Backoffice\Airline\App\Resources\AirlineResource;
-use Lightit\Backoffice\City\App\Resources\CityResource;
 
 /**
  * @property-read \Lightit\Backoffice\Flight\Domain\Models\Flight $resource
