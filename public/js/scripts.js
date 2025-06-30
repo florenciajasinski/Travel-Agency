@@ -1,120 +1,130 @@
 let cities = [];
 let currentAirlineId = '';
 let currentPage = 1;
+const HTTP_METHODS = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE'
+};
 
 $(document).ready(function () {
   loadCities(currentPage);
   loadAirlines();
+  registerEventHandlers();
+});
 
-  $(document).on('click', '#add_city_btn', function () {
-    $('#create_city_form').toggleClass('hidden');
-  });
+function registerEventHandlers() {
+  $(document).on('click', '#add_city_btn', CreateCityForm);
+  $(document).on('click', '#save_city_btn', saveCity);
+  $(document).on('click', '#filter', filterCities);
+  $(document).on('click', '.delete-btn', deleteCity);
+  $(document).on('click', '.edit-btn', showEditForm);
+  $(document).on('click', '.cancel-edit-btn', cancelEdit);
+  $(document).on('click', '.save-edit-btn', saveEdit);
+}
 
-  $(document).on('click', '#save_city_btn', function () {
-    const name = $('#new_city_name').val();
-    const errorMessage = $('#error_message');
-    $.ajax({
-      url: '/api/cities',
-      method: 'POST',
-      data: { name },
-      success: function () {
+function CreateCityForm() {
+  $('#create_city_form').toggleClass('hidden');
+}
+
+function showEditForm() {
+  const parentDiv = $(this).parent();
+  parentDiv.hide();
+  parentDiv.siblings('.edit-form').show();
+}
+
+function cancelEdit() {
+  const parentDiv = $(this).parent();
+  parentDiv.hide();
+  parentDiv.siblings('.action-buttons').show();
+}
+
+function saveCity() {
+  const name = $('#new_city_name').val();
+  const errorMessage = $('#error_message');
+
+  $.ajax({
+    url: '/api/cities',
+    method: HTTP_METHODS.POST,
+    data: { name },
+    success: function () {
       $('#new_city_name').val('');
       $('#create_city_form').addClass('hidden');
       errorMessage.text('').hide();
       loadCities(currentPage);
-      },
-      error: function (xhr) {
-        let message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
-        errorMessage.text(message).show();
-      }
-    });
+    },
+    error: function (xhr) {
+      let message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
+      errorMessage.text(message).show();
+    }
   });
+}
 
-  $(document).on('click', '#filter', function () {
-    currentAirlineId = $('#airline_filter').val();
-    loadCities(currentPage);
-  });
-
-  $(document).on('click', '.delete-btn', function () {
-    const id = $(this).data('id');
-    $.ajax({
-      url: `/api/cities/${id}`,
-      type: 'DELETE',
-      success: function () {
-        loadCities(currentPage);
-      }
-    });
-  });
-
-  $(document).on('click', '.edit-btn', function () {
-    const parentDiv = $(this).parent();
-    parentDiv.hide();
-    parentDiv.siblings('.edit-form').show();
-  });
-
-  $(document).on('click', '.cancel-edit-btn', function () {
-    const parentDiv = $(this).parent();
-    parentDiv.hide();
-    parentDiv.siblings('.action-buttons').show();
-  });
-
-  $(document).on('click', '.save-edit-btn', function () {
+function saveEdit() {
   const id = $(this).data('id');
   const parentDiv = $(this).parent();
   const newName = parentDiv.find('.edit-name').val();
   const errorSpan = $('<span class="text-red-600 text-sm ml-2 error-message"></span>');
 
-    $.ajax({
-      url: `/api/cities/${id}`,
-      method: 'PUT',
-      data: { name: newName },
-      success: function () {
-        loadCities(currentPage);
-      },
-      error: function (xhr) {
-        const message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
-        parentDiv.append(errorSpan.text(message));
-      }
-    });
+  $.ajax({
+    url: `/api/cities/${id}`,
+    method: HTTP_METHODS.PUT,
+    data: { name: newName },
+    success: function () {
+      loadCities(currentPage);
+    },
+    error: function (xhr) {
+      parentDiv.find('.error-message').remove();
+      const message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
+      parentDiv.append(errorSpan.text(message));
+    }
   });
+}
 
+function deleteCity() {
+  const id = $(this).data('id');
+  $.ajax({
+    url: `/api/cities/${id}`,
+    method: HTTP_METHODS.DELETE,
+    success: function () {
+      loadCities(currentPage);
+    }
+  });
+}
+
+
+function filterCities() {
+  currentAirlineId = $('#airline_filter').val();
+  loadCities(currentPage);
+}
 
 function loadCities(page = 1) {
   currentPage = page;
 
-  if (currentAirlineId) {
-    $.ajax({
-      url: `/api/airlines/${currentAirlineId}/cities`,
-      method: 'GET',
-      success: function (response) {
-        cities = response.data;
-        renderTable();
-      },
-      error: function () {
-        alert('Error loading cities for the selected airline');
-      }
-    });
-  } else {
-    $.ajax({
-      url: '/api/cities',
-      method: 'GET',
-      data: { page },
-      success: function (response) {
-        cities = response.data;
-        renderTable();
-        renderPagination(response.meta);
-      },
-      error: function () {
-        alert('Error loading cities');
-      }
-    });
-  }
+  const url = currentAirlineId ? `/api/airlines/${currentAirlineId}/cities` : '/api/cities';
+
+  const params = currentAirlineId ? {} : { page };
+
+  $.ajax({
+    url,
+    method: HTTP_METHODS.GET,
+    data: params,
+    success: function (response) {
+      cities = response.data;
+      renderTable();
+      if (!currentAirlineId) renderPagination(response.meta);
+    },
+    error: function () {
+      alert('Error loading cities');
+    }
+  });
 }
 
 function loadAirlines() {
   $.ajax({
     url: '/api/airlines',
-    method: 'GET',
+    method: HTTP_METHODS.GET,
     success: function (response) {
       const select = $('#airline_filter');
       select.empty();
@@ -132,21 +142,21 @@ function loadAirlines() {
 function renderTable() {
   $('#city_table_body').empty();
 
-  for (const city of cities) {
+  for (const { id, name, incoming_flights, outgoing_flights } of cities) {
     const row = $(`
       <tr class="border-t">
-        <td class="px-4 py-2">${city.id}</td>
-        <td class="px-4 py-2">${city.name}</td>
-        <td class="px-4 py-2">${city.incoming_flights}</td>
-        <td class="px-4 py-2">${city.outgoing_flights}</td>
+        <td class="px-4 py-2">${id}</td>
+        <td class="px-4 py-2">${name}</td>
+        <td class="px-4 py-2">${incoming_flights}</td>
+        <td class="px-4 py-2">${outgoing_flights}</td>
         <td class="px-4 py-2">
           <div class="flex gap-2 action-buttons">
-            <button class="edit-btn text-blue-600 hover:underline" data-id="${city.id}">Edit</button>
-            <button class="delete-btn text-red-600 hover:underline" data-id="${city.id}">Delete</button>
+            <button class="edit-btn text-blue-600 hover:underline" data-id="${id}">Edit</button>
+            <button class="delete-btn text-red-600 hover:underline" data-id="${id}">Delete</button>
           </div>
           <div class="edit-form hidden mt-2">
-            <input type="text" class="edit-name border px-2 py-1 text-sm rounded" value="${city.name}" />
-            <button class="save-edit-btn text-sm bg-green-500 text-white px-2 py-1 rounded" data-id="${city.id}">Save</button>
+            <input type="text" class="edit-name border px-2 py-1 text-sm rounded" value="${name}" />
+            <button class="save-edit-btn text-sm bg-green-500 text-white px-2 py-1 rounded" data-id="${id}">Save</button>
             <button class="cancel-edit-btn text-sm bg-gray-300 px-2 py-1 rounded">Cancel</button>
           </div>
         </td>
@@ -166,5 +176,3 @@ function renderPagination(pagination) {
     $('#pagination').append(button);
   }
 }
-
-});
