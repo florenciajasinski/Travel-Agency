@@ -1,7 +1,10 @@
 <x-flight-layout title="Flights" heading="Flight Management">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <button id="add_flight_btn" class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700">
+            <button
+                id="add_flight_btn"
+                class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700"
+            >
                 Add Flight
             </button>
         </div>
@@ -17,33 +20,7 @@
             <div id="flight_form_error" class="text-red-600 text-sm mt-2"></div>
         </div>
 
-        <table class="table-auto w-full bg-white shadow-md rounded text-sm">
-            <thead class="bg-gray-100 text-gray-700 text-left">
-                <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Origin</th>
-                    <th class="px-4 py-2">Destination</th>
-                    <th class="px-4 py-2">Airline</th>
-                    <th class="px-4 py-2">Departure</th>
-                    <th class="px-4 py-2">Arrival</th>
-                    <th class="px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="flight_table_body">
-                <tr id="flight_row_template" class="hidden">
-                    <td class="px-4 py-2 id-cell"></td>
-                    <td class="px-4 py-2 origin-cell"></td>
-                    <td class="px-4 py-2 destination-cell"></td>
-                    <td class="px-4 py-2 airline-cell"></td>
-                    <td class="px-4 py-2 departure-cell"></td>
-                    <td class="px-4 py-2 arrival-cell"></td>
-                    <td class="px-4 py-2">
-                        <button class="edit-btn text-blue-600 hover:underline">Edit</button>
-                        <button class="delete-btn text-red-600 hover:underline">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <x-flight-table/>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -155,52 +132,47 @@
                 const errorMessage = document.getElementById('flight_form_error');
                 if (err.response?.status === 422) {
                     if (err.response?.data?.error?.fields) {
-                        const firstErrorList = Object.values(err.response.data.error.fields)[0];
-                        if (Array.isArray(firstErrorList)) {
-                            errorMessage.textContent = firstErrorList[0];
-                            return;
-                        }
+                        errorMessage.textContent = Object.values(err.response.data.error.fields);
                     }
                 }
             });
         }
 
         function loadFlights() {
-        axios.get('/api/flights').then(res => {
-            const tbody = document.getElementById('flight_table_body');
-            const template = document.getElementById('flight_row_template');
+            axios.get('/api/flights').then(res => {
+                const tbody = document.getElementById('flight_table_body');
+                const template = document.getElementById('flight_row_template');
 
-            const rows = tbody.querySelectorAll('tr');
-            for (const row of rows) {
-                if (row.id !== 'flight_row_template') {
-                    row.remove();
+                const rows = tbody.querySelectorAll('tr');
+                for (const row of rows) {
+                    if (row.id !== 'flight_row_template') {
+                        row.remove();
+                    }
                 }
-            }
-            res.data.data.forEach(flight => {
-                const row = template.cloneNode(true);
-                row.id = '';
-                row.classList.remove('hidden');
+                res.data.data.forEach(flight => {
+                    const row = template.cloneNode(true);
+                    row.id = '';
+                    row.classList.remove('hidden');
 
-                row.querySelector('.id-cell').textContent = flight.id;
-                row.querySelector('.origin-cell').textContent = flight.departure_city_name;
-                row.querySelector('.destination-cell').textContent = flight.arrival_city_name;
-                row.querySelector('.airline-cell').textContent = flight.airline_name;
-                row.querySelector('.departure-cell').textContent = flight.departure_time;
-                row.querySelector('.arrival-cell').textContent = flight.arrival_time;
+                    row.querySelector('.id-cell').textContent = flight.id;
+                    row.querySelector('.origin-cell').textContent = flight.departure_city_name;
+                    row.querySelector('.destination-cell').textContent = flight.arrival_city_name;
+                    row.querySelector('.airline-cell').textContent = flight.airline_name;
+                    row.querySelector('.departure-cell').textContent = formatDate(flight.departure_time);
+                    row.querySelector('.arrival-cell').textContent = formatDate(flight.arrival_time);
 
-                const deleteBtn = row.querySelector('.delete-btn');
-                deleteBtn.addEventListener('click', () => deleteFlight(flight.id));
+                    const deleteBtn = row.querySelector('.delete-btn');
+                    deleteBtn.addEventListener('click', () => deleteFlight(flight.id));
 
-                const editBtn = row.querySelector('.edit-btn');
-                editBtn.addEventListener('click', () => {
-                    window.location.href = `/flights/${flight.id}/edit`;
+                    const editBtn = row.querySelector('.edit-btn');
+                    editBtn.addEventListener('click', () => {
+                        window.location.href = `/flights/${flight.id}/edit`;
+                    });
+
+                    tbody.appendChild(row);
                 });
-
-                tbody.appendChild(row);
             });
-        });
-    }
-
+        }
 
         function deleteFlight(id) {
             if (!confirm('Are you sure you want to delete this flight?')) return;
@@ -209,6 +181,18 @@
             }).catch(error => {
                 document.getElementById('flight_form_error').textContent = error.message;
             });
+        }
+
+        function formatDate(datetime) {
+            if (!datetime) return '';
+
+            const date = new Date(datetime);
+
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+
+            return (year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day));
         }
     </script>
 </x-flight-layout>
