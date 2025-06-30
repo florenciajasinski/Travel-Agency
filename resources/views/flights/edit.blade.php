@@ -23,22 +23,16 @@
             const originSelect = document.getElementById('origin_city');
             const updateBtn = document.getElementById('save_flight_btn');
 
-            if (airlineSelect) {
-                airlineSelect.addEventListener('change', (event) => {
-                    const airlineId = event.target.value;
-                    loadCitiesByAirline(airlineId);
-                });
-            }
-            if (originSelect) {
-                originSelect.addEventListener('change', updateDestinations);
-            }
-            if (updateBtn) {
-                updateBtn.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    console.log('Update button clicked');
-                    updateFlight();
-                });
-            }
+            airlineSelect.addEventListener('change', (event) => {
+                const airlineId = event.target.value;
+                loadCitiesByAirline(airlineId);
+            });
+
+            originSelect.addEventListener('change', updateDestinations);
+
+            updateBtn.addEventListener('click', function (event) {
+                updateFlight();
+            });
         });
 
         function loadAirlines() {
@@ -57,14 +51,12 @@
 
         function loadCitiesByAirline(airlineId = null, originId = null, destinationId = null) {
             const id = airlineId || document.getElementById('airline').value;
-            console.log(`Loading cities for airline ID: ${id}`);
             const originSelect = document.getElementById('origin_select');
             const destinationSelect = document.getElementById('destination_select');
 
             if (!id) {
                 originSelect.classList.add('hidden');
                 destinationSelect.classList.add('hidden');
-                return Promise.resolve();
             }
 
             return axios.get(`/api/airlines/${id}/cities`).then(res => {
@@ -131,8 +123,6 @@
                     errorMessage.textContent = res.data.message;
                     return;
                 }
-                console.log('Flight updated successfully:', res.data);
-                console.log('Redirecting to flights page...');
                 window.location.href = '/flights';
             })
             .catch(err => {
