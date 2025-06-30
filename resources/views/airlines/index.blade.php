@@ -69,7 +69,6 @@
 
             document.getElementById('filter').addEventListener('click', () => {
                 currentCityId = document.getElementById('city_filter').value;
-                currentPage = 1;
                 loadAirlines(currentPage);
             });
 
