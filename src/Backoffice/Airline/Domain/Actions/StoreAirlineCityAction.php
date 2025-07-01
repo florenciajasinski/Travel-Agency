@@ -13,7 +13,6 @@ class StoreAirlineCityAction
      * Sync multiple airlines to a city with custom pivot data.
      *
      * @param array $airlineIdsWithData Array of airline_id => [pivot_data]
-     *
      */
     public function execute(City $city, array $airlineIdsWithData): void
     {
