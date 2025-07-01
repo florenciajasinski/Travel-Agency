@@ -86,14 +86,14 @@
 
         function updateDestinations() {
             const originId = document.getElementById('origin_city').value;
-            const dest = document.getElementById('destination_city');
-            dest.innerHTML = '<option value="">Select Destination</option>';
+            const destination = document.getElementById('destination_city');
+            destination.innerHTML = '<option value="">Select Destination</option>';
 
-            cities.filter(c => c.id != originId).forEach(city => {
+            cities.filter(city => city.id != originId).forEach(city => {
                 const option = document.createElement('option');
                 option.value = city.id;
                 option.textContent = city.name;
-                dest.appendChild(option);
+                destination.appendChild(option);
             });
         }
 
@@ -184,8 +184,6 @@
         }
 
         function formatDate(datetime) {
-            if (!datetime) return '';
-
             const date = new Date(datetime);
 
             const year = date.getFullYear();

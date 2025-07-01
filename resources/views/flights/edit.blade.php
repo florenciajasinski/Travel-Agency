@@ -17,22 +17,16 @@
         let airlines = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadAirlines().then(() => loadFlightData());
+            loadAirlines();
+            loadFlightData();
 
             const airlineSelect = document.getElementById('airline');
             const originSelect = document.getElementById('origin_city');
             const updateBtn = document.getElementById('save_flight_btn');
 
-            airlineSelect.addEventListener('change', (event) => {
-                const airlineId = event.target.value;
-                loadCitiesByAirline(airlineId);
-            });
-
+            airlineSelect.addEventListener('change', loadCitiesByAirline);
             originSelect.addEventListener('change', updateDestinations);
-
-            updateBtn.addEventListener('click', function (event) {
-                updateFlight();
-            });
+            updateBtn.addEventListener('click', updateFlight);
         });
 
         function loadAirlines() {
@@ -49,17 +43,19 @@
             });
         }
 
-        function loadCitiesByAirline(airlineId = null, originId = null, destinationId = null) {
-            const id = airlineId || document.getElementById('airline').value;
+        function loadCitiesByAirline() {
+            const airlineId = document.getElementById('airline').value;
+            const originId = document.getElementById('origin_city').value;
+            const destinationId = document.getElementById('destination_city').value;
             const originSelect = document.getElementById('origin_select');
             const destinationSelect = document.getElementById('destination_select');
 
-            if (!id) {
+            if (!airlineId) {
                 originSelect.classList.add('hidden');
                 destinationSelect.classList.add('hidden');
             }
 
-            return axios.get(`/api/airlines/${id}/cities`).then(res => {
+            return axios.get(`/api/airlines/${airlineId}/cities`).then(res => {
                 cities = res.data.data;
                 const origin = document.getElementById('origin_city');
                 origin.innerHTML = '<option value="">Select Origin</option>';
@@ -69,35 +65,28 @@
                     option.textContent = city.name;
                     origin.appendChild(option);
                 });
-                if (originId) origin.value = originId;
-
-                updateDestinations(destinationId);
+                updateDestinations();
                 originSelect.classList.remove('hidden');
                 destinationSelect.classList.remove('hidden');
             });
         }
 
-        function updateDestinations(preselectId = null) {
+        function updateDestinations() {
             const originId = document.getElementById('origin_city').value;
-            const dest = document.getElementById('destination_city');
-            dest.innerHTML = '<option value="">Select Destination</option>';
-            cities.filter(c => c.id != originId).forEach(city => {
+            const destination = document.getElementById('destination_city');
+            destination.innerHTML = '<option value="">Select Destination</option>';
+            cities.filter(city => city.id != originId).forEach(city => {
                 const option = document.createElement('option');
                 option.value = city.id;
                 option.textContent = city.name;
-                dest.appendChild(option);
+                destination.appendChild(option);
             });
-            if (preselectId) dest.value = preselectId;
         }
 
         function loadFlightData() {
             axios.get(`/api/flights/${flightId}`).then(res => {
                 const flight = res.data.data;
-                document.getElementById('airline').value = flight.airline_id;
-                document.getElementById('departure_date').value = flight.departure_time;
-                document.getElementById('arrival_date').value = flight.arrival_time;
-
-                loadCitiesByAirline(flight.airline_id, flight.departure_city_id, flight.arrival_city_id);
+                loadCitiesByAirline();
             });
         }
 
