@@ -7,27 +7,27 @@ namespace Lightit\Backoffice\Airline\App\Controllers;
 use Illuminate\Http\JsonResponse;
 use Lightit\Backoffice\Airline\Domain\Actions\StoreAirlineCityAction;
 use Lightit\Backoffice\City\Domain\Models\City;
-use Lightit\Backoffice\Airline\Domain\Models\Airline;
-
 
 class StoreAirlineCityController
 {
     public function __invoke(
         StoreAirlineCityAction $storeAirlineCityAction,
-        City $city
+        City $city,
     ): JsonResponse {
         /** @phpstan-ignore-next-line */
         $airlineData = request()->all();
         $airlineId = $airlineData['airline_id'];
-        $airline = Airline::find($airlineId);
+        $airlineIdsWithData = [$airlineId];
 
-
-        $airlineCity = $storeAirlineCityAction->execute($city, $airline);
+        $storeAirlineCityAction->execute($city, $airlineIdsWithData);
 
         return response()->json([
             'message' => 'Airline city stored successfully',
             'data' => [
-                'airline_city' => $airlineCity,
+                'airline_city' => [
+                    'city_id' => $city->id,
+                    'airline_ids' => $airlineIdsWithData,
+                ],
             ],
         ]);
     }

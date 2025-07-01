@@ -12,16 +12,15 @@ class StoreAirlineCityAction
     /**
      * Sync multiple airlines to a city with custom pivot data.
      *
-     * @param City $city
      * @param array $airlineIdsWithData Array of airline_id => [pivot_data]
-     * @return void
+     *
      */
     public function execute(City $city, array $airlineIdsWithData): void
     {
         // If only IDs are passed (not arrays), add timestamps automatically
         $syncData = [];
         foreach ($airlineIdsWithData as $airlineId => $pivotData) {
-            if (!is_array($pivotData)) {
+            if (! is_array($pivotData)) {
                 $airlineId = $pivotData;
                 $pivotData = [
                     'created_at' => now(),
@@ -34,5 +33,3 @@ class StoreAirlineCityAction
         $city->airlines()->sync($syncData);
     }
 }
-
-
