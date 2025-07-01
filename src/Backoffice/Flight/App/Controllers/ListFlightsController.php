@@ -16,6 +16,7 @@ class ListFlightsController
         PaginationRequest $paginationRequest,
     ): JsonResponse {
         $flights = $listFlightsAction->execute($paginationRequest->toDto());
+
         return FlightResource::collection($flights)->response();
     }
 }
