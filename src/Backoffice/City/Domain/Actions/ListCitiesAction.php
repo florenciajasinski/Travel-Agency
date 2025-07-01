@@ -7,6 +7,7 @@ namespace Lightit\Backoffice\City\Domain\Actions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Lightit\Backoffice\City\Domain\Models\City;
+use Lightit\Backoffice\Pagination\PaginationDto;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ListCitiesAction
@@ -14,11 +15,13 @@ class ListCitiesAction
     /**
      * @return LengthAwarePaginator<int, Model>
      */
-    public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
+    public function execute(PaginationDto $paginationDto): LengthAwarePaginator
     {
-        return QueryBuilder::for(City::class)
+        $query = QueryBuilder::for(City::class)
             ->allowedFilters(['name', 'id'])
             ->allowedSorts('name', 'id')
-            ->paginate($perPage, ['*'], 'page', $page);
+            ->defaultSort('id');
+
+        return $query->paginate($paginationDto->perPage, ['*'], 'page', $paginationDto->page);
     }
 }
