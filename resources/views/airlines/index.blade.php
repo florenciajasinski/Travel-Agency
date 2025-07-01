@@ -11,6 +11,7 @@
             <input type="text" id="new_airline_name" class="border px-3 py-2 rounded text-sm w-full mb-2" placeholder="Name" />
             <input type="text" id="new_airline_description" class="border px-3 py-2 rounded text-sm w-full mb-2" placeholder="Description" />
             <button id="save_airline_btn" class="px-4 py-2 bg-green-600 text-white rounded text-sm">Save</button>
+            <button id="cancel_airline_btn" class="px-4 py-2 bg-gray-300 text-gray-800 rounded text-sm ml-2">Cancel</button>
             <div id="airline_form_error" class="text-red-600 text-sm mt-2"></div>
         </div>
 
@@ -58,84 +59,51 @@
         let airlines = [];
         let currentPage = 1;
         let currentCityId = '';
+        const HTTP_METHODS = {
+        GET: 'GET',
+        POST: 'POST',
+        PUT: 'PUT',
+        DELETE: 'DELETE'
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
+            initAirlinesPage();
+        });
+
+        function initAirlinesPage() {
             loadAirlines(currentPage);
             loadCities();
 
-            document.getElementById('add_airline_btn').addEventListener('click', () => {
-                document.getElementById('create_airline_form').classList.toggle('hidden');
-            });
+            document.getElementById('add_airline_btn').addEventListener('click', toggleCreateAirlineForm);
+            document.getElementById('filter').addEventListener('click', handleCityFilter);
+            document.getElementById('save_airline_btn').addEventListener('click', createAirline);
+            document.getElementById('cancel_airline_btn').addEventListener('click', hideCreateAirlineForm);
+        }
 
-            document.getElementById('filter').addEventListener('click', () => {
-                currentCityId = document.getElementById('city_filter').value;
-                loadAirlines(currentPage);
-            });
+        function toggleCreateAirlineForm() {
+            document.getElementById('create_airline_form').classList.toggle('hidden');
+        }
 
-            document.getElementById('save_airline_btn').addEventListener('click', () => {
-                const errorMessage = document.getElementById('airline_form_error');
-                const name = document.getElementById('new_airline_name').value;
-                const description = document.getElementById('new_airline_description').value;
-                errorMessage.textContent = '';
-                name.textContent = '';
-                description.textContent = '';
+        function handleCityFilter() {
+            currentCityId = document.getElementById('city_filter').value;
+            loadAirlines(currentPage);
+        }
 
-                fetch('/api/airlines', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ name, description })
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        return res.json().then(({ error }) => {
-                            const fields = error?.fields;
-                            const message = Object.values(fields);
-                            throw new Error(message);
-                        });
-                    }
-                    return res.json();
-                })
-                .then(() => {
-                    document.getElementById('create_airline_form').classList.add('hidden');
-                    loadAirlines(currentPage);
-                    document.getElementById('new_airline_name').value = '';
-                    document.getElementById('new_airline_description').value = '';
-                    errorMessage.textContent = '';
-                })
-                .catch(error => {
-                    errorMessage.textContent = error.message;
-                });
-            });
-        });
+        function hideCreateAirlineForm() {
+            document.getElementById('create_airline_form').classList.add('hidden');
+        }
 
         function loadAirlines(page = 1) {
             currentPage = page;
-            if (currentCityId) {
-                fetch(`api/cities/${currentCityId}/airlines`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.json())
-                .then(response => {
-                    airlines = response.data;
-                    renderTable();
-                })
-                .catch(error => alert('Error loading airlines: ' + error));
-            } else {
-                fetch(`/api/airlines?page=${page}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.json())
+            const url = currentCityId ? `api/cities/${currentCityId}/airlines` : `/api/airlines?page=${page}`;
+
+            fetch(url, {
+                headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+                },
+            })
+            .then(res => res.json())
                 .then(response => {
                     airlines = response.data;
                     renderTable();
@@ -144,12 +112,11 @@
                 .catch(error => {
                     alert('Error loading airlines: ' + error);
                 });
-            }
         }
 
         function loadCities() {
             fetch('/api/cities', {
-                method: 'GET',
+                method: HTTP_METHODS.GET,
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
@@ -176,7 +143,7 @@
             for (let i = 1; i <= meta.last_page; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i;
-                btn.className = `px-2 py-1 mx-1 border rounded ${i === meta.current_page}`;
+                btn.className = `px-2 py-1 mx-1 border rounded`;
                 btn.addEventListener('click', () => {
                     currentPage = i;
                     loadAirlines(i);
@@ -219,7 +186,7 @@
                 const deleteBtn = row.querySelector('.delete-btn');
                 deleteBtn.addEventListener('click', function() {
                     fetch(`/api/airlines/${airline.id}`, {
-                        method: 'DELETE',
+                        method: HTTP_METHODS.DELETE,
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     }).then(function() {
                         loadAirlines(currentPage);
@@ -248,7 +215,7 @@
                     errorMessage.textContent = '';
 
                     fetch(`/api/airlines/${airline.id}`, {
-                        method: 'PUT',
+                        method: HTTP_METHODS.PUT,
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
@@ -277,6 +244,42 @@
                 });
                 tbody.appendChild(row);
             });
+        }
+
+        function createAirline() {
+                const errorMessage = document.getElementById('airline_form_error');
+                const name = document.getElementById('new_airline_name').value;
+                const description = document.getElementById('new_airline_description').value;
+                errorMessage.textContent = '';
+
+                fetch('/api/airlines', {
+                    method: HTTP_METHODS.POST,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ name, description })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(({ error }) => {
+                            const fields = error?.fields;
+                            const message = Object.values(fields);
+                            throw new Error(message);
+                        });
+                    }
+                    return res.json();
+                })
+                .then(() => {
+                    document.getElementById('create_airline_form').classList.add('hidden');
+                    loadAirlines(currentPage);
+                    document.getElementById('new_airline_name').value = '';
+                    document.getElementById('new_airline_description').value = '';
+                    errorMessage.textContent = '';
+                })
+                .catch(error => {
+                    errorMessage.textContent = error.message;
+                });
         }
     </script>
 </x-flight-layout>

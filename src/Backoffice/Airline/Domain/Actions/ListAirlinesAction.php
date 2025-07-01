@@ -17,7 +17,7 @@ class ListAirlinesAction
      */
     public function execute(PaginationDto $paginationDto): LengthAwarePaginator
     {
-        return QueryBuilder::for(Airline::class)
+        return QueryBuilder::for(Airline::query()->withCount('flights'))
             ->allowedFilters(['name', 'description'])
             ->allowedSorts('name', 'description')
             ->defaultSort('id')

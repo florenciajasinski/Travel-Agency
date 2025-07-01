@@ -15,10 +15,10 @@ class AirlineResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->resource->id,
-            'name' => $this->resource->name,
-            'description' => $this->resource->description,
-            'flights_count' => $this->resource->flights()->count(),
+            'id' => $this->resource->id ?? null,
+            'name' => $this->resource->name ?? null,
+            'description' => $this->resource->description ?? null,
+            'flights_count' => $this->resource->flights_count ?? 0,
         ];
     }
 }
