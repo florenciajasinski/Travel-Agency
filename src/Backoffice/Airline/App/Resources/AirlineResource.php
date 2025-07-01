@@ -18,6 +18,7 @@ class AirlineResource extends JsonResource
             'id' => $this->resource->id,
             'name' => $this->resource->name,
             'description' => $this->resource->description,
+            'flights_count' => $this->resource->flights_count ?? 0,
         ];
     }
 }

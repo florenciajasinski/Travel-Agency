@@ -1,15 +1,11 @@
 <x-flight-layout title="Cities" heading="City Management">
     <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex gap-2">
-                <select id="airline_filter" class="border px-3 py-2 rounded text-sm">
-                    <option value="">All Airlines</option>
-                </select>
-
-                <button id="filter" class="px-4 py-2 rounded text-sm font-medium bg-blue-600 text-white hover:bg-blue-700">Filter</button>
-                <button id="add_city_btn" class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700">Add City</button>
-            </div>
-        </div>
+        <x-filter-and-create
+            filterId="airline_filter"
+            filterLabel="All Airlines"
+            createBtnId="add_city_btn"
+            createLabel="Add City"
+        />
 
         <div id="create_city_form" class="hidden mb-6">
             <input type="text" id="new_city_name" class="border px-3 py-2 rounded text-sm w-full mb-2" />
