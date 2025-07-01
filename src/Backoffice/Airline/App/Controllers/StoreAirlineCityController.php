@@ -12,7 +12,7 @@ class StoreAirlineCityController
 {
     public function __invoke(
         StoreAirlineCityAction $storeAirlineCityAction,
-        City $city
+        City $city,
     ): JsonResponse {
         // @var int $airlineId
         /** @phpstan-ignore-next-line */

@@ -7,7 +7,7 @@ namespace Lightit\Backoffice\Airline\Domain\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int                          $id
+ * @property int $id
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AirlineCity newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AirlineCity newQuery()
@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AirlineCity whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AirlineCity whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AirlineCity whereUpdatedAt($value)
- *
  *
  * @mixin \Eloquent
  */
