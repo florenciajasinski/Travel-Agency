@@ -36,18 +36,21 @@
             loadAirlines();
             loadFlights(currentPage);
 
-            document.getElementById('add_flight_btn').addEventListener('click', () => {
-                document.getElementById('create_flight_form').classList.toggle('hidden');
-            });
-
+            document.getElementById('add_flight_btn').addEventListener('click', toggleCreateFlightForm);
             document.getElementById('airline').addEventListener('change', loadCitiesByAirline);
             document.getElementById('origin_city').addEventListener('change', updateDestinations);
             document.getElementById('save_flight_btn').addEventListener('click', createFlight);
-            document.getElementById('cancel_flight_btn').addEventListener('click', () => {
-                document.getElementById('create_flight_form').classList.add('hidden');
-                document.getElementById('flight_form_error').textContent = '';
-            });
+            document.getElementById('cancel_flight_btn').addEventListener('click', cancelCreateFlightForm);
         });
+
+        function toggleCreateFlightForm() {
+            document.getElementById('create_flight_form').classList.toggle('hidden');
+        }
+
+        function cancelCreateFlightForm() {
+            document.getElementById('create_flight_form').classList.add('hidden');
+            document.getElementById('flight_form_error').textContent = '';
+        }
 
         function loadAirlines() {
             axios.get('/api/airlines').then(res => {
