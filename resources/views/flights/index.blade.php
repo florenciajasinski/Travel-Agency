@@ -15,22 +15,26 @@
                 destinationId="destination_city"
                 airlineId="airline"
                 buttonId="save_flight_btn"
+                buttonCancelId="cancel_flight_btn"
                 buttonText="Save Flight"
             />
             <div id="flight_form_error" class="text-red-600 text-sm mt-2"></div>
         </div>
 
         <x-flight-table/>
+
     </div>
+    <div id="pagination" class="mt-4 flex justify-center"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         let cities = [];
         let airlines = [];
+        let currentPage = 1;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadAirlines();
-            loadFlights();
+            loadFlights(currentPage);
 
             document.getElementById('add_flight_btn').addEventListener('click', () => {
                 document.getElementById('create_flight_form').classList.toggle('hidden');
@@ -39,6 +43,10 @@
             document.getElementById('airline').addEventListener('change', loadCitiesByAirline);
             document.getElementById('origin_city').addEventListener('change', updateDestinations);
             document.getElementById('save_flight_btn').addEventListener('click', createFlight);
+            document.getElementById('cancel_flight_btn').addEventListener('click', () => {
+                document.getElementById('create_flight_form').classList.add('hidden');
+                document.getElementById('flight_form_error').textContent = '';
+            });
         });
 
         function loadAirlines() {
@@ -126,7 +134,7 @@
                 document.getElementById('arrival_date').value = '';
                 document.getElementById('create_flight_form').classList.add('hidden');
                 document.getElementById('flight_form_error').textContent = '';
-                loadFlights();
+                loadFlights(currentPage);
             })
             .catch(function (err) {
                 const errorMessage = document.getElementById('flight_form_error');
@@ -138,8 +146,9 @@
             });
         }
 
-        function loadFlights() {
-            axios.get('/api/flights').then(res => {
+        function loadFlights(page = 1) {
+            currentPage = page;
+            axios.get(`/api/flights?page=${currentPage}`).then(res => {
                 const tbody = document.getElementById('flight_table_body');
                 const template = document.getElementById('flight_row_template');
 
@@ -171,13 +180,14 @@
 
                     tbody.appendChild(row);
                 });
+                renderPagination(res.data.meta);
             });
         }
 
         function deleteFlight(id) {
             if (!confirm('Are you sure you want to delete this flight?')) return;
             axios.delete(`/api/flights/${id}`).then(() => {
-                loadFlights();
+                loadFlights(currentPage);
             }).catch(error => {
                 document.getElementById('flight_form_error').textContent = error.message;
             });
@@ -191,6 +201,22 @@
             const day = date.getDate();
 
             return (year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day));
+        }
+
+        function renderPagination(meta) {
+            const container = document.getElementById('pagination');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= meta.last_page; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `px-2 py-1 mx-1 border rounded`;
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    loadAirlines(i);
+                });
+                container.appendChild(btn);
+            }
         }
     </script>
 </x-flight-layout>

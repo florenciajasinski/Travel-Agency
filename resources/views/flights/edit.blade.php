@@ -23,10 +23,15 @@
             const airlineSelect = document.getElementById('airline');
             const originSelect = document.getElementById('origin_city');
             const updateBtn = document.getElementById('save_flight_btn');
+            const cancelBtn = document.getElementById('cancel_flight_btn');
 
             airlineSelect.addEventListener('change', loadCitiesByAirline);
             originSelect.addEventListener('change', updateDestinations);
             updateBtn.addEventListener('click', updateFlight);
+            cancelBtn.addEventListener('click', () => {
+                document.getElementById('flight_form_error').textContent = '';
+                window.location.href = '/flights';
+            });
         });
 
         function loadAirlines() {
