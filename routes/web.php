@@ -14,6 +14,10 @@ Route::get('/cities', function () {
     return view('cities.index');
 });
 
+Route::get('/cities/{id}/edit', function ($id) {
+    return view('cities.edit', ['cityId' => $id]);
+});
+
 Route::get('/airlines', function () {
     return view('airlines.index');
 });

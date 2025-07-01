@@ -19,8 +19,6 @@ function registerEventHandlers() {
   $(document).on('click', '#save_city_btn', saveCity);
   $(document).on('click', '#filter', filterCities);
   $(document).on('click', '.delete-btn', deleteCity);
-  $(document).on('click', '.edit-btn', showEditForm);
-  $(document).on('click', '.cancel-edit-btn', cancelEdit);
   $(document).on('click', '.save-edit-btn', saveEdit);
 }
 
@@ -28,17 +26,6 @@ function CreateCityForm() {
   $('#create_city_form').toggleClass('hidden');
 }
 
-function showEditForm() {
-  const parentDiv = $(this).parent();
-  parentDiv.hide();
-  parentDiv.siblings('.edit-form').show();
-}
-
-function cancelEdit() {
-  const parentDiv = $(this).parent();
-  parentDiv.hide();
-  parentDiv.siblings('.action-buttons').show();
-}
 
 function saveCity() {
   const name = $('#new_city_name').val();
@@ -162,6 +149,13 @@ function renderTable() {
         </td>
       </tr>
     `);
+    const editBtn = row[0].querySelector('.edit-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        window.location.href = `/cities/${id}/edit`;
+      });
+    }
+
     $('#city_table_body').append(row);
   }
 }
