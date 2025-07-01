@@ -1,12 +1,9 @@
 <x-flight-layout title="Flights" heading="Flight Management">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <button
+            <x-flight-button
                 id="add_flight_btn"
-                class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700"
-            >
-                Add Flight
-            </button>
+            />
         </div>
 
         <div id="create_flight_form" class="hidden mb-6">
