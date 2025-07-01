@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Lightit\Shared\App\Exceptions\Http\InvalidActionException;
+use Lightit\Backoffice\Flight\App\Controllers\EditFlightController;
 
 Route::get('invalid', static fn() => throw new InvalidActionException("Is not valid"));
 
@@ -21,7 +22,4 @@ Route::get('/flights', function () {
     return view('flights.index');
 });
 
-Route::get('/flights/{id}/edit', function ($id) {
-    return view('flights.edit', ['flightId' => $id]);
-});
-
+Route::get('/flights/{id}/edit', EditFlightController::class);

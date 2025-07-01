@@ -3,6 +3,7 @@
         <div class="flex justify-between items-center mb-6">
             <x-flight-button
                 id="add_flight_btn"
+                createButton="Add Flight"
             />
         </div>
 
@@ -164,9 +165,9 @@
                     row.classList.remove('hidden');
 
                     row.querySelector('.id-cell').textContent = flight.id;
-                    row.querySelector('.origin-cell').textContent = flight.departure_city_name;
-                    row.querySelector('.destination-cell').textContent = flight.arrival_city_name;
-                    row.querySelector('.airline-cell').textContent = flight.airline_name;
+                    row.querySelector('.origin-cell').textContent = flight.departure_city.name;
+                    row.querySelector('.destination-cell').textContent = flight.arrival_city.name;
+                    row.querySelector('.airline-cell').textContent = flight.airline.name;
                     row.querySelector('.departure-cell').textContent = formatDate(flight.departure_time);
                     row.querySelector('.arrival-cell').textContent = formatDate(flight.arrival_time);
 
@@ -195,12 +196,7 @@
 
         function formatDate(datetime) {
             const date = new Date(datetime);
-
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-
-            return (year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day));
+            return date.toDateString();
         }
 
         function renderPagination(meta) {
