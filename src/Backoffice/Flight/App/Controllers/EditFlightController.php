@@ -11,7 +11,7 @@ class EditFlightController
 {
     public function __invoke(int $id): View
     {
-        $flight = Flight::find($id);
+        $flight = Flight::findOrFail($id);
 
         return view('flights.edit', ['flight' => $flight]);
     }
