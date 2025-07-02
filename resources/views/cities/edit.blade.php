@@ -47,15 +47,16 @@
                 url: `/api/cities/${cityId}/airlines`,
                 method: HTTP_METHODS.GET,
                 success: function(response) {
-                    selectedAirlines = (response.data).map(a => Number(a.id));
+                    selectedAirlines = response.data.map(airline => Number(airline.id));
                     $.ajax({
                         url: '/api/airlines',
                         method: HTTP_METHODS.GET,
-                        success: function(data) {
+                        success: function(response) {
+                            const airlines = response.data;
                             const container = $('#airline-checkboxes');
                             container.empty();
 
-                            (data.data || data).forEach(airline => {
+                            airlines.forEach(function (airline) {
                                 const isChecked = selectedAirlines.includes(Number(airline.id)) ? 'checked' : '';
 
                                 const checkbox = $(`
