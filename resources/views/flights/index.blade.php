@@ -117,35 +117,44 @@
             errorMessage.textContent = '';
 
             axios.post('/api/flights', {
-                departure_city_id: departureCity,
-                arrival_city_id: arrivalCity,
-                airline_id: airline,
-                departure_time: departureTime,
-                arrival_time: arrivalTime
+            departure_city_id: departureCity,
+            arrival_city_id: arrivalCity,
+            airline_id: airline,
+            departure_time: departureTime,
+            arrival_time: arrivalTime
             })
             .then(res => {
-                if (res.data.status === 'error') {
-                    errorMessage.textContent = res.data.message;
-                    return;
-                }
-                document.getElementById('origin_city').value = '';
-                document.getElementById('destination_city').value = '';
-                document.getElementById('airline').value = '';
-                document.getElementById('departure_date').value = '';
-                document.getElementById('arrival_date').value = '';
-                document.getElementById('create_flight_form').classList.add('hidden');
-                document.getElementById('flight_form_error').textContent = '';
-                loadFlights(currentPage);
+            if (res.data.status === 'error') {
+                errorMessage.textContent = res.data.message;
+                return;
+            }
+            document.getElementById('origin_city').value = '';
+            document.getElementById('destination_city').value = '';
+            document.getElementById('airline').value = '';
+            document.getElementById('departure_date').value = '';
+            document.getElementById('arrival_date').value = '';
+            document.getElementById('create_flight_form').classList.add('hidden');
+            document.getElementById('flight_form_error').textContent = '';
+            loadFlights(currentPage);
             })
-            .catch(function (err) {
-                const errorMessage = document.getElementById('flight_form_error');
-                if (err.response?.status === 422) {
-                    if (err.response?.data?.error?.fields) {
-                        errorMessage.textContent = Object.values(err.response.data.error.fields);
-                    }
+            .catch(({ response }) => {
+            if (response?.status === 422 && response?.data?.error?.fields) {
+                const fields = response.data.error.fields;
+                let errorList = '<ul>';
+                Object.values(fields).forEach(errors => {
+                if (Array.isArray(errors)) {
+                    errors.forEach(message => {
+                    errorList += `<li>${message}</li>`;
+                    });
                 }
-            });
-        }
+                });
+                errorList += '</ul>';
+                errorMessage.innerHTML = errorList;
+                return;
+            }
+            errorMessage.textContent = response?.data?.message;
+        });
+    }
 
         function loadFlights(page = 1) {
             currentPage = page;
