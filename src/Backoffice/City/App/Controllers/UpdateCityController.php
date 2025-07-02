@@ -17,7 +17,9 @@ class UpdateCityController
         UpsertCityAction $upsertCityAction,
         City $city,
     ): JsonResponse {
-        $city = $upsertCityAction->execute($upsertCityRequest->toDto(), $city);
+        /** @var array<int> $airlineIds */
+        $airlineIds = $upsertCityRequest->input('airline_id');
+        $city = $upsertCityAction->execute($upsertCityRequest->toDto(), $city, $airlineIds);
 
         return CityResource::make($city)
             ->response();

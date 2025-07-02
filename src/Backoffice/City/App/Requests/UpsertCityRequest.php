@@ -12,6 +12,8 @@ class UpsertCityRequest extends FormRequest
 {
     public const NAME = 'name';
 
+    public const AIRLINES_IDS = 'airline_id';
+
     public function rules(): array
     {
         return [
@@ -21,6 +23,8 @@ class UpsertCityRequest extends FormRequest
                 new NameUniqueForCities(),
                 $this->isMethod('post') ? 'required' : 'sometimes',
             ],
+            self::AIRLINES_IDS => ['required', 'array'],
+            self::AIRLINES_IDS . '.*' => ['integer', 'exists:airlines,id'],
         ];
     }
 
