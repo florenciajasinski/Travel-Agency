@@ -41,35 +41,33 @@
         });
 
         function loadAirlinesWithChecked(cityId) {
-            let selectedAirlines = [];
-
             $.ajax({
+            url: '/api/airlines',
+            method: HTTP_METHODS.GET,
+            success: function(response) {
+                const airlines = response.data;
+                $.ajax({
                 url: `/api/cities/${cityId}/airlines`,
                 method: HTTP_METHODS.GET,
-                success: function(response) {
-                    selectedAirlines = response.data.map(airline => Number(airline.id));
-                    $.ajax({
-                        url: '/api/airlines',
-                        method: HTTP_METHODS.GET,
-                        success: function(response) {
-                            const airlines = response.data;
-                            const container = $('#airline-checkboxes');
-                            container.empty();
+                success: function(cityResponse) {
+                    const selectedAirlines = cityResponse.data.map(airline => Number(airline.id));
+                    const container = $('#airline-checkboxes');
+                    container.empty();
 
-                            airlines.forEach(function (airline) {
-                                const isChecked = selectedAirlines.includes(Number(airline.id)) ? 'checked' : '';
+                    airlines.forEach(function (airline) {
+                    const isChecked = selectedAirlines.includes(Number(airline.id)) ? 'checked' : '';
 
-                                const checkbox = $(`
-                                    <label class="flex items-center space-x-2">
-                                        <input type="checkbox" name="airline_id[]" value="${airline.id}" class="form-checkbox" ${isChecked}>
-                                        <span>${airline.name}</span>
-                                    </label>
-                                `);
-                                container.append(checkbox);
-                            });
-                        },
+                    const checkbox = $(`
+                        <label class="flex items-center space-x-2">
+                        <input type="checkbox" name="airline_id[]" value="${airline.id}" class="form-checkbox" ${isChecked}>
+                        <span>${airline.name}</span>
+                        </label>
+                    `);
+                    container.append(checkbox);
                     });
                 },
+                });
+            },
             });
         }
 

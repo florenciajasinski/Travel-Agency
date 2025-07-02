@@ -15,7 +15,7 @@ Route::get('/cities', function () {
     return view('cities.index');
 });
 
-Route::get('/cities/{id}/edit', EditCityController::class);
+Route::get('/cities/{city}/edit', EditCityController::class);
 
 Route::get('/airlines', function () {
     return view('airlines.index');

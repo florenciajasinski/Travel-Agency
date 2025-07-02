@@ -9,10 +9,8 @@ use Lightit\Backoffice\City\Domain\Models\City;
 
 class EditCityController
 {
-    public function __invoke(int $id): View
+    public function __invoke(City $city): View
     {
-        $city = City::findOrFail($id);
-
         return view('cities.edit', ['city' => $city]);
     }
 }
