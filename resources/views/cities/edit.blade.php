@@ -8,7 +8,6 @@
         <div class="flex flex-col col-span-2">
             <label class="text-gray-700 font-semibold mb-2">Airlines</label>
             <div id="airline-checkboxes" class="grid grid-cols-2 gap-2">
-                <!-- checkboxes dinámicos -->
             </div>
         </div>
 
@@ -23,6 +22,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const cityId = {{ $city->id }};
+        const HTTP_METHODS = {
+            POST: 'POST',
+            GET: 'GET',
+            PUT: 'PUT',
+        };
 
         $(document).ready(function () {
             loadAirlinesWithChecked(cityId);
@@ -39,43 +43,52 @@
         function loadAirlinesWithChecked(cityId) {
             let selectedAirlines = [];
 
-            $.get(`/api/cities/${cityId}/airlines`, function(response) {
-                selectedAirlines = response.airline_ids || [];
+            $.ajax({
+                url: `/api/cities/${cityId}/airlines`,
+                method: HTTP_METHODS.GET,
+                success: function(response) {
+                    selectedAirlines = (response.data).map(a => Number(a.id));
+                    $.ajax({
+                        url: '/api/airlines',
+                        method: HTTP_METHODS.GET,
+                        success: function(data) {
+                            const container = $('#airline-checkboxes');
+                            container.empty();
 
-                $.get('/api/airlines', function(data) {
-                    const container = $('#airline-checkboxes');
-                    container.empty();
+                            (data.data || data).forEach(airline => {
+                                const isChecked = selectedAirlines.includes(Number(airline.id)) ? 'checked' : '';
 
-                    (data.data || data).forEach(airline => {
-                        const isChecked = selectedAirlines.includes(airline.id) ? 'checked' : '';
-                        const checkbox = $(`
-                            <label class="flex items-center space-x-2">
-                                <input type="checkbox" name="airline_id[]" value="${airline.id}" class="form-checkbox" ${isChecked}>
-                                <span>${airline.name}</span>
-                            </label>
-                        `);
-                        container.append(checkbox);
+                                const checkbox = $(`
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" name="airline_id[]" value="${airline.id}" class="form-checkbox" ${isChecked}>
+                                        <span>${airline.name}</span>
+                                    </label>
+                                `);
+                                container.append(checkbox);
+                            });
+                        },
                     });
-                });
+                },
             });
         }
 
+
         function updateCity(cityId) {
             const name = $('#name').val();
-            const airlineIds = $('input[name="airline_id[]"]:checked')
-                .map(function () {
-                    return parseInt($(this).val());
-                })
-                .get();
+            const airlineIds = [];
+            $('input[name="airline_id[]"]:checked').each(function () {
+                const airlineId = parseInt($(this).val());
+                airlineIds.push(airlineId);
+            });
             $.ajax({
                 url: `/api/cities/${cityId}`,
-                method: 'PUT',
+                method: HTTP_METHODS.PUT,
                 contentType: 'application/json',
                 data: JSON.stringify({ name }),
                 success: function () {
                     $.ajax({
                         url: `/api/cities/${cityId}/airlines`,
-                        method: 'POST',
+                        method: HTTP_METHODS.POST,
                         contentType: 'application/json',
                         data: JSON.stringify({ airline_id: airlineIds }),
                         success: function () {
@@ -83,13 +96,13 @@
                             window.location.href = '/cities';
                         },
                         error: function (xhr) {
-                            const message = xhr.responseJSON?.message || 'Error saving airlines';
+                            const message = xhr.responseJSON?.error?.message;
                             $('#edit_city_error').text(message).removeClass('hidden');
                         }
                     });
                 },
                 error: function (xhr) {
-                    const message = xhr.responseJSON?.message || 'Error saving city';
+                    const message = xhr.responseJSON?.error?.message;
                     $('#edit_city_error').text(message).removeClass('hidden');
                 }
             });

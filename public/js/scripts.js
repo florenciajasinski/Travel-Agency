@@ -19,7 +19,6 @@ function registerEventHandlers() {
   $(document).on('click', '#save_city_btn', saveCity);
   $(document).on('click', '#filter', filterCities);
   $(document).on('click', '.delete-btn', deleteCity);
-  $(document).on('click', '.save-edit-btn', saveEdit);
 }
 
 function CreateCityForm() {
@@ -48,27 +47,6 @@ function saveCity() {
   });
 }
 
-function saveEdit() {
-  const id = $(this).data('id');
-  const parentDiv = $(this).parent();
-  const newName = parentDiv.find('.edit-name').val();
-  const errorSpan = $('<span class="text-red-600 text-sm ml-2 error-message"></span>');
-
-  $.ajax({
-    url: `/api/cities/${id}`,
-    method: HTTP_METHODS.PUT,
-    data: { name: newName },
-    success: function () {
-      loadCities(currentPage);
-    },
-    error: function (xhr) {
-      parentDiv.find('.error-message').remove();
-      const message = xhr.responseJSON?.error?.fields?.name?.[0] || xhr.responseJSON?.error?.message;
-      parentDiv.append(errorSpan.text(message));
-    }
-  });
-}
-
 function deleteCity() {
   const id = $(this).data('id');
   $.ajax({
@@ -79,7 +57,6 @@ function deleteCity() {
     }
   });
 }
-
 
 function filterCities() {
   currentAirlineId = $('#airline_filter').val();
