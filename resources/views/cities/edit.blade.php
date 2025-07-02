@@ -23,7 +23,6 @@
     <script>
         const cityId = {{ $city->id }};
         const HTTP_METHODS = {
-            POST: 'POST',
             GET: 'GET',
             PUT: 'PUT',
         };
@@ -70,35 +69,25 @@
             },
             });
         }
-
-
         function updateCity(cityId) {
             const name = $('#name').val();
             const airlineIds = [];
+
             $('input[name="airline_id[]"]:checked').each(function () {
-                const airlineId = parseInt($(this).val());
-                airlineIds.push(airlineId);
+                airlineIds.push(parseInt($(this).val()));
             });
+
             $.ajax({
                 url: `/api/cities/${cityId}`,
                 method: HTTP_METHODS.PUT,
                 contentType: 'application/json',
-                data: JSON.stringify({ name }),
+                data: JSON.stringify({
+                    name: name,
+                    airline_id: airlineIds
+                }),
                 success: function () {
-                    $.ajax({
-                        url: `/api/cities/${cityId}/airlines`,
-                        method: HTTP_METHODS.POST,
-                        contentType: 'application/json',
-                        data: JSON.stringify({ airline_id: airlineIds }),
-                        success: function () {
-                            $('#edit_city_error').addClass('hidden');
-                            window.location.href = '/cities';
-                        },
-                        error: function (xhr) {
-                            const message = xhr.responseJSON?.error?.message;
-                            $('#edit_city_error').text(message).removeClass('hidden');
-                        }
-                    });
+                    $('#edit_city_error').addClass('hidden');
+                    window.location.href = '/cities';
                 },
                 error: function (xhr) {
                     const message = xhr.responseJSON?.error?.message;
@@ -106,5 +95,6 @@
                 }
             });
         }
+
     </script>
 </x-flight-layout>
