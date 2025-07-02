@@ -22,4 +22,4 @@ Route::get('/flights', function () {
     return view('flights.index');
 });
 
-Route::get('/flights/{id}/edit', EditFlightController::class);
+Route::get('/flights/{flight}/edit', EditFlightController::class);

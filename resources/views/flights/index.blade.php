@@ -1,9 +1,9 @@
 <x-flight-layout title="Flights" heading="Flight Management">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <x-flight-button
+            <x-button
                 id="add_flight_btn"
-                createButton="Add Flight"
+                button="Add Flight"
             />
         </div>
 
@@ -108,18 +108,18 @@
 
         function createFlight() {
             const errorMessage = document.getElementById('flight_form_error');
-            const departureCity = document.getElementById('origin_city').value;
-            const arrivalCity = document.getElementById('destination_city').value;
-            const airline = document.getElementById('airline').value;
+            const departureCityId = document.getElementById('origin_city').value;
+            const arrivalCityId = document.getElementById('destination_city').value;
+            const airlineId = document.getElementById('airline').value;
             const departureTime = document.getElementById('departure_date').value;
             const arrivalTime = document.getElementById('arrival_date').value;
 
             errorMessage.textContent = '';
 
             axios.post('/api/flights', {
-            departure_city_id: departureCity,
-            arrival_city_id: arrivalCity,
-            airline_id: airline,
+            departure_city_id: departureCityId,
+            arrival_city_id: arrivalCityId,
+            airline_id: airlineId,
             departure_time: departureTime,
             arrival_time: arrivalTime
             })

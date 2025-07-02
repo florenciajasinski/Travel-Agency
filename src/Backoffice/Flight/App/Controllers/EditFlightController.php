@@ -9,10 +9,8 @@ use Lightit\Backoffice\Flight\Domain\Models\Flight;
 
 class EditFlightController
 {
-    public function __invoke(int $id): View
+    public function __invoke(Flight $flight): View
     {
-        $flight = Flight::findOrFail($id);
-
         return view('flights.edit', ['flight' => $flight]);
     }
 }

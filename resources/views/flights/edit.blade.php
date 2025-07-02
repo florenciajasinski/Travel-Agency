@@ -104,9 +104,9 @@
 
     function updateFlight() {
         const errorMessage = document.getElementById('flight_form_error');
-        const departureCity = document.getElementById('origin_city').value;
-        const arrivalCity = document.getElementById('destination_city').value;
-        const airline = document.getElementById('airline').value;
+        const departureCityId = document.getElementById('origin_city').value;
+        const arrivalCityId = document.getElementById('destination_city').value;
+        const airlineId = document.getElementById('airline').value;
         const departureTime = document.getElementById('departure_date').value;
         const arrivalTime = document.getElementById('arrival_date').value;
 
@@ -114,9 +114,9 @@
         errorMessage.innerHTML = '';
 
         axios.put(`/api/flights/${flightId}`, {
-            departure_city_id: departureCity,
-            arrival_city_id: arrivalCity,
-            airline_id: airline,
+            departure_city_id: departureCityId,
+            arrival_city_id: arrivalCityId,
+            airline_id: airlineId,
             departure_time: departureTime,
             arrival_time: arrivalTime
         })
