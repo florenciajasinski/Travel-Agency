@@ -21,6 +21,7 @@
             loadAirlines();
             loadFlightData();
 
+
             const airlineSelect = document.getElementById('airline');
             const originSelect = document.getElementById('origin_city');
             const updateBtn = document.getElementById('save_flight_btn');
@@ -114,6 +115,7 @@
 
             errorMessage.textContent = '';
             errorMessage.innerHTML = '';
+
 
             axios.put(`/api/flights/${flightId}`, {
             departure_city_id: departureCity,

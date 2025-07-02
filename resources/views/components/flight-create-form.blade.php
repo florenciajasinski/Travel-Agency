@@ -16,18 +16,18 @@
     <div class="flex flex-col hidden" id="destination_select">
         <label for="destination_city" class="text-gray-700 font-semibold mb-1">Destination</label>
         <select id="destination_city" class="border px-3 py-2 rounded text-sm">
-            <option value="">Select Destination</option>
+            <option value="{{ $flight->arrival_city_id }}">{{ $flight->arrivalCity->name }}</option>
         </select>
     </div>
 
     <div class="flex flex-col">
         <label for="departure_date" class="text-gray-700 font-semibold mb-1">Departure Date</label>
-        <input type="date" id="departure_date" class="border px-3 py-2 rounded text-sm" />
+        <input type="date" id="departure_date" class="border px-3 py-2 rounded text-sm" value="{{ \Carbon\Carbon::parse($flight->departure_time)->format('Y-m-d') }}" />
     </div>
 
     <div class="flex flex-col">
         <label for="arrival_date" class="text-gray-700 font-semibold mb-1">Arrival Date</label>
-        <input type="date" id="arrival_date" class="border px-3 py-2 rounded text-sm" />
+        <input type="date" id="arrival_date" class="border px-3 py-2 rounded text-sm" value="{{ \Carbon\Carbon::parse($flight->arrival_time)->format('Y-m-d') }}" />
     </div>
 </div>
 
