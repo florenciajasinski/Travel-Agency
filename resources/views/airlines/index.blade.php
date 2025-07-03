@@ -7,53 +7,18 @@
             createLabel="Add airline"
         />
 
-        <div id="create_airline_form" class="hidden mb-6">
-            <input type="text" id="new_airline_name" class="border px-3 py-2 rounded text-sm w-full mb-2" placeholder="Name" />
-            <input type="text" id="new_airline_description" class="border px-3 py-2 rounded text-sm w-full mb-2" placeholder="Description" />
-            <button id="save_airline_btn" class="px-4 py-2 bg-green-600 text-white rounded text-sm">Save</button>
-            <button id="cancel_airline_btn" class="px-4 py-2 bg-gray-300 text-gray-800 rounded text-sm ml-2">Cancel</button>
-            <div id="airline_form_error" class="text-red-600 text-sm mt-2"></div>
-        </div>
+        <x-airline-create-form
+            id="create_airline_form"
+            nameId="new_airline_name"
+            descriptionId="new_airline_description"
+            buttonId="save_airline_btn"
+            buttonCancelId="cancel_airline_btn"
+            buttonText="Save Airline"
+        />
+        <x-airline-table/>
 
-        <table class="table-auto w-full bg-white shadow-md rounded text-sm">
-            <thead class="bg-gray-100 text-gray-700 text-left">
-                <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Description</th>
-                    <th class="px-4 py-2">Number of Flights</th>
-                    <th class="px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="airline_table_body">
-                <tr id="airline_row_template" class="hidden">
-                    <td class="px-4 py-2 id-cell"></td>
-                    <td class="px-4 py-2">
-                        <span class="name-cell"></span>
-                        <input type="text" class="edit-name hidden border px-2 py-1 rounded w-full text-sm" />
-                    </td>
-                    <td class="px-4 py-2">
-                        <span class="description-cell"></span>
-                        <textarea class="edit-desc hidden border px-2 py-1 rounded w-full text-sm" rows="3"></textarea>
-                    </td>
-                    <td class="px-4 py-2 flights-cell"></td>
-                    <td class="px-4 py-2">
-                        <div class="action-buttons flex gap-2">
-                            <button class="edit-btn text-blue-600 hover:underline">Edit</button>
-                            <button class="delete-btn text-red-600 hover:underline">Delete</button>
-                        </div>
-                        <div class="edit-buttons hidden flex gap-2 items-center">
-                            <button class="save-btn text-green-600 hover:underline">Save</button>
-                            <button class="cancel-btn text-gray-600 hover:underline">Cancel</button>
-                            <span class="error-msg text-red-600 text-xs ml-2"></span>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
-
-    <div id="pagination" class="mt-4 flex justify-center"></div>
+    <x-pagination/>
 
     <script>
         let airlines = [];
@@ -262,23 +227,45 @@
                 })
                 .then(res => {
                     if (!res.ok) {
-                        return res.json().then(({ error }) => {
-                            const fields = error?.fields;
-                            const message = Object.values(fields);
-                            throw new Error(message);
+                        return res.json().then((data) => {
+                            if (data?.error?.fields) {
+                                const fields = data.error.fields;
+                                const message = Object.values(fields).flat().join(', ');
+                                throw new Error(message);
+                            }
+                            throw new Error(data?.error?.message || 'An error occurred');
                         });
                     }
                     return res.json();
                 })
-                .then(() => {
+                .then((res => {
+                    if (res.data.status === 'error') {
+                        errorMessage.textContent = res.data.message;
+                        return;
+                    }
                     document.getElementById('create_airline_form').classList.add('hidden');
                     loadAirlines(currentPage);
                     document.getElementById('new_airline_name').value = '';
                     document.getElementById('new_airline_description').value = '';
                     errorMessage.textContent = '';
-                })
-                .catch(error => {
-                    errorMessage.textContent = error.message;
+                }))
+                .catch((err) => {
+                    const response = err?.response;
+                    if (response?.status === 422 && response?.data?.error?.fields) {
+                        const fields = response.data.error.fields;
+                        let errorList = '<ul>';
+                        Object.values(fields).forEach(errors => {
+                            if (Array.isArray(errors)) {
+                                errors.forEach(message => {
+                                    errorList += `<li>${message}</li>`;
+                                });
+                            }
+                        });
+                        errorList += '</ul>';
+                        errorMessage.innerHTML = errorList;
+                        return;
+                    }
+                    errorMessage.textContent = err.message ;
                 });
         }
     </script>

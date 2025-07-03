@@ -20,8 +20,9 @@
                 <td class="px-4 py-2 departure-cell"></td>
                 <td class="px-4 py-2 arrival-cell"></td>
                 <td class="px-4 py-2">
-                    <button class="edit-btn text-blue-600 hover:underline">Edit</button>
-                    <button class="delete-btn text-red-600 hover:underline">Delete</button>
+                    <x-button-table class="edit-btn text-blue-600 hover:underline">Edit</x-button-table>
+                    <x-button-table class="delete-btn text-red-600 hover:underline">Delete</x-button-table>
+
                 </td>
             </tr>
         </tbody>

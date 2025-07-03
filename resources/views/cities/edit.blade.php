@@ -1,23 +1,5 @@
 <x-flight-layout title="Edit City" heading="Edit City">
-    <div class="max-w-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex flex-col col-span-2">
-            <label for="name" class="text-gray-700 font-semibold mb-1">Name</label>
-            <input type="text" id="name" name="name" class="border px-3 py-2 rounded text-sm mb-4" value="{{ $city->name }}">
-        </div>
-
-        <div class="flex flex-col col-span-2">
-            <label class="text-gray-700 font-semibold mb-2">Airlines</label>
-            <div id="airline-checkboxes" class="grid grid-cols-2 gap-2">
-            </div>
-        </div>
-
-        <div class="col-span-2 flex justify-end gap-2">
-            <button type="button" class="bg-green-500 text-white px-4 py-2 rounded save-edit-btn">Save</button>
-            <button type="button" class="bg-gray-300 px-4 py-2 rounded cancel-edit-btn">Cancel</button>
-        </div>
-
-        <div id="edit_city_error" class="text-red-600 text-sm col-span-2 hidden"></div>
-    </div>
+    <x-city-edit-form :city="$city" />
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
