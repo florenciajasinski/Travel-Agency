@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Lightit\Backoffice\City\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Lightit\Backoffice\Airline\Domain\Models\Airline;
 use Lightit\Backoffice\City\Domain\DataTransferObject\CityDto;
 use Lightit\Rules\NameUniqueForCities;
-use Lightit\Backoffice\Airline\Domain\Models\Airline;
-use Illuminate\Validation\Rule;
 
 class UpsertCityRequest extends FormRequest
 {
@@ -27,11 +27,11 @@ class UpsertCityRequest extends FormRequest
             ],
             self::AIRLINES_IDS => [
                 $this->isMethod('put') ? 'required' : 'sometimes',
-                'array'
+                'array',
             ],
             self::AIRLINES_IDS . '.*' => [
                 'integer',
-                Rule::exists(Airline::class, 'id')
+                Rule::exists(Airline::class, 'id'),
             ],
         ];
     }
