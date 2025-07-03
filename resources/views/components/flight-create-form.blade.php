@@ -1,22 +1,17 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col">
         <x-form-label-select id="airline" label="Airline" />
-    <div id="origin_select">
-        <x-form-label-select id="origin_city" label="Origin" class="hidden" />
+    </div>
+    <div class="flex flex-col hidden" id="origin_select">
+        <x-form-label-select id="origin_city" label="Origin" />
     </div>
 
-    <div id="destination_select">
-        <x-form-label-select id="destination_city" label="Destination" class="hidden" />
+    <div class="flex flex-col hidden" id="destination_select">
+        <x-form-label-select id="destination_city" label="Destination" />
     </div>
 
-    <div class="flex flex-col">
-        <label for="departure_date" class="text-gray-700 font-semibold mb-1">Departure Date</label>
-        <input type="date" id="departure_date" class="border px-3 py-2 rounded text-sm w-full" />
-    </div>
-
-    <div class="flex flex-col">
-        <label for="arrival_date" class="text-gray-700 font-semibold mb-1">Arrival Date</label>
-        <input type="date" id="arrival_date" class="border px-3 py-2 rounded text-sm w-full" />
-    </div>
+    <x-form-label-date id="departure_date" label="Departure Date" />
+    <x-form-label-date id="arrival_date" label="Arrival Date" />
 
 </div>
 

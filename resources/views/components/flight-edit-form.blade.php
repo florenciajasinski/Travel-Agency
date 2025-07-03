@@ -7,24 +7,24 @@
         </div>
 
         <div class="flex flex-col hidden" id="origin_select">
-            <x-form-label-select id="origin_city" label="Origin" />
+            <x-form-label-select id="origin_city" label="Origin" class="hidden" />
         </div>
 
         <div class="flex flex-col hidden" id="destination_select">
-            <x-form-label-select id="destination_city" label="Destination" />
+            <x-form-label-select id="destination_city" label="Destination" class="hidden" />
         </div>
 
-        <div class="flex flex-col">
-            <label for="departure_date" class="text-gray-700 font-semibold mb-1">Departure Date</label>
-            <input type="date" id="departure_date" class="border px-3 py-2 rounded text-sm"
-                   value="{{ $flight->departure_time->format('Y-m-d') }}" />
-        </div>
+        <x-form-label-date
+            id="departure_date"
+            label="Departure Date"
+            :value="$flight->departure_time->format('Y-m-d')"
+        />
 
-        <div class="flex flex-col">
-            <label for="arrival_date" class="text-gray-700 font-semibold mb-1">Arrival Date</label>
-            <input type="date" id="arrival_date" class="border px-3 py-2 rounded text-sm"
-                   value="{{ $flight->arrival_time->format('Y-m-d') }}" />
-        </div>
+        <x-form-label-date
+            id="arrival_date"
+            label="Arrival Date"
+            :value="$flight->arrival_time->format('Y-m-d')"
+        />
     </div>
 
     <div class="mt-4 flex justify-end gap-3">

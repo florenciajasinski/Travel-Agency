@@ -15,8 +15,8 @@
             buttonCancelId="cancel_airline_btn"
             buttonText="Save Airline"
         />
-        <x-airline-table/>
 
+        <x-airline-table/>
     </div>
     <x-pagination/>
 
@@ -25,10 +25,10 @@
         let currentPage = 1;
         let currentCityId = '';
         const HTTP_METHODS = {
-        GET: 'GET',
-        POST: 'POST',
-        PUT: 'PUT',
-        DELETE: 'DELETE'
+            GET: 'GET',
+            POST: 'POST',
+            PUT: 'PUT',
+            DELETE: 'DELETE'
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -60,23 +60,25 @@
 
         function loadAirlines(page = 1) {
             currentPage = page;
-            const url = currentCityId ? `api/cities/${currentCityId}/airlines` : `/api/airlines?page=${page}`;
+            const url = currentCityId
+                ? `api/cities/${currentCityId}/airlines`
+                : `/api/airlines?page=${page}`;
 
             fetch(url, {
                 headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
             })
             .then(res => res.json())
-                .then(response => {
-                    airlines = response.data;
-                    renderTable();
-                    renderPagination(response.meta);
-                })
-                .catch(error => {
-                    alert('Error loading airlines: ' + error);
-                });
+            .then(response => {
+                airlines = response.data;
+                renderTable();
+                renderPagination(response.meta);
+            })
+            .catch(error => {
+                alert('Error loading airlines: ' + error);
+            });
         }
 
         function loadCities() {
@@ -191,20 +193,30 @@
                         })
                     })
                     .then(function(res) {
-                        if (!res.ok) {
-                            return res.json().then(function(data) {
-                                const fields = data.error?.fields;
-                                const message = Object.values(fields);
-                                throw new Error(message);
-                            });
-                        }
-                        return res.json();
-                    })
-                    .then(function() {
-                        loadAirlines(currentPage);
+                        return res.json().then(function(data) {
+                            if (!res.ok) {
+                                if (data?.error?.fields) {
+                                    const fields = data.error.fields;
+                                    let errorList = '<ul>';
+                                    Object.values(fields).forEach(errors => {
+                                        if (Array.isArray(errors)) {
+                                            errors.forEach(message => {
+                                                errorList += `<li>${message}</li>`;
+                                            });
+                                        }
+                                    });
+                                    errorList += '</ul>';
+                                    errorMessage.innerHTML = errorList;
+                                    return;
+                                }
+                                errorMessage.textContent = data?.error?.message;
+                                return;
+                            }
+                            loadAirlines(currentPage);
+                        });
                     })
                     .catch(function(err) {
-                        errorMessage.textContent = err.message;
+                        errorMessage.textContent = 'Unexpected error: ' + err.message;
                     });
                 });
                 tbody.appendChild(row);
@@ -212,47 +224,26 @@
         }
 
         function createAirline() {
-                const errorMessage = document.getElementById('airline_form_error');
-                const name = document.getElementById('new_airline_name').value;
-                const description = document.getElementById('new_airline_description').value;
-                errorMessage.textContent = '';
+            const errorMessage = document.getElementById('airline_form_error');
+            const name = document.getElementById('new_airline_name').value;
+            const description = document.getElementById('new_airline_description').value;
+            errorMessage.innerHTML = '';
 
-                fetch('/api/airlines', {
-                    method: HTTP_METHODS.POST,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ name, description })
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        return res.json().then((data) => {
-                            if (data?.error?.fields) {
-                                const fields = data.error.fields;
-                                const message = Object.values(fields).flat().join(', ');
-                                throw new Error(message);
-                            }
-                            throw new Error(data?.error?.message || 'An error occurred');
-                        });
-                    }
-                    return res.json();
-                })
-                .then((res => {
-                    if (res.data.status === 'error') {
-                        errorMessage.textContent = res.data.message;
-                        return;
-                    }
-                    document.getElementById('create_airline_form').classList.add('hidden');
-                    loadAirlines(currentPage);
-                    document.getElementById('new_airline_name').value = '';
-                    document.getElementById('new_airline_description').value = '';
-                    errorMessage.textContent = '';
-                }))
-                .catch((err) => {
-                    const response = err?.response;
-                    if (response?.status === 422 && response?.data?.error?.fields) {
-                        const fields = response.data.error.fields;
+            fetch('/api/airlines', {
+                method: HTTP_METHODS.POST,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ name, description })
+            })
+            .then(res => {
+                return res.json().then(data => ({ ok: res.ok, data }));
+            })
+            .then(({ ok, data }) => {
+                if (!ok) {
+                    if (data?.error?.fields) {
+                        const fields = data.error.fields;
                         let errorList = '<ul>';
                         Object.values(fields).forEach(errors => {
                             if (Array.isArray(errors)) {
@@ -265,8 +256,24 @@
                         errorMessage.innerHTML = errorList;
                         return;
                     }
-                    errorMessage.textContent = err.message ;
-                });
+                    errorMessage.textContent = data?.error?.message;
+                    return;
+                }
+
+                if (data.data?.status === 'error') {
+                    errorMessage.textContent = data.data.message;
+                    return;
+                }
+
+                document.getElementById('create_airline_form').classList.add('hidden');
+                document.getElementById('new_airline_name').value = '';
+                document.getElementById('new_airline_description').value = '';
+                errorMessage.innerHTML = '';
+                loadAirlines(currentPage);
+            })
+            .catch(err => {
+                errorMessage.textContent = err.message;
+            });
         }
     </script>
 </x-flight-layout>

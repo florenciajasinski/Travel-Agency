@@ -51,6 +51,7 @@
             },
             });
         }
+
         function updateCity(cityId) {
             const name = $('#name').val();
             const airlineIds = [];
@@ -68,12 +69,27 @@
                     airline_id: airlineIds
                 }),
                 success: function () {
-                    $('#edit_city_error').addClass('hidden');
+                    $('#edit_city_error').addClass('hidden').html('');
                     window.location.href = '/cities';
                 },
                 error: function (xhr) {
+                    const fields = xhr.responseJSON?.error?.fields;
                     const message = xhr.responseJSON?.error?.message;
-                    $('#edit_city_error').text(message).removeClass('hidden');
+
+                    if (fields) {
+                        let errorList = '<ul>';
+                        Object.values(fields).forEach(errors => {
+                            if (Array.isArray(errors)) {
+                                errors.forEach(msg => {
+                                    errorList += `<li>${msg}</li>`;
+                                });
+                            }
+                        });
+                        errorList += '</ul>';
+                        $('#edit_city_error').removeClass('hidden').html(errorList);
+                    } else {
+                        $('#edit_city_error').removeClass('hidden').text(message);
+                    }
                 }
             });
         }
