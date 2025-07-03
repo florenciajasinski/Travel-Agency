@@ -32,13 +32,12 @@ class UpsertFlightRequest extends FormRequest
             self::ARRIVAL_CITY_ID => ['required', Rule::exists(City::class, 'id')],
             self::DEPARTURE_TIME => [
                 'required',
-                'date_format:Y-m-d H:i:s',
-                'after:now',
+                'date_format:Y-m-d',
             ],
             self::ARRIVAL_TIME => [
                 'required',
-                'date_format:Y-m-d H:i:s',
                 'after:' . self::DEPARTURE_TIME,
+                'date_format:Y-m-d',
             ],
         ];
     }

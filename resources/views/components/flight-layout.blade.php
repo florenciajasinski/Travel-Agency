@@ -23,9 +23,6 @@
   </header>
 
   <div class="flex justify-center gap-4 mb-8">
-    <a href="/" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
-        Information
-    </a>
 
     <a href="/cities" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
         Cities
@@ -35,7 +32,7 @@
         Airlines
     </a>
 
-    <a href="#" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
+    <a href="/flights" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
         Flights
     </a>
    </div>
