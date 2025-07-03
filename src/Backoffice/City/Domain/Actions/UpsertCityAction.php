@@ -9,7 +9,7 @@ use Lightit\Backoffice\City\Domain\Models\City;
 
 class UpsertCityAction
 {
-    public function execute(CityDto $cityDto, City|null $city = null, array $airlineIds = []): City
+    public function execute(CityDto $cityDto, City|null $city = null): City
     {
         $city ??= new City();
         $city->name = $cityDto->name ?: $city->name;
@@ -18,6 +18,7 @@ class UpsertCityAction
             $city->save();
         }
         $airlineIdsWithTime = [];
+        $airlineIds = $cityDto->airlineIds ?? [];
 
         foreach ($airlineIds as $id) {
             $airlineIdsWithTime[$id] = [

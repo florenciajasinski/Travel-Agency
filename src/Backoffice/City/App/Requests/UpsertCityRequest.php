@@ -7,6 +7,8 @@ namespace Lightit\Backoffice\City\App\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Lightit\Backoffice\City\Domain\DataTransferObject\CityDto;
 use Lightit\Rules\NameUniqueForCities;
+use Lightit\Backoffice\Airline\Domain\Models\Airline;
+use Illuminate\Validation\Rule;
 
 class UpsertCityRequest extends FormRequest
 {
@@ -18,13 +20,19 @@ class UpsertCityRequest extends FormRequest
     {
         return [
             self::NAME => [
+                'required',
                 'string',
                 'max:255',
                 new NameUniqueForCities(),
-                $this->isMethod('post') ? 'required' : 'sometimes',
             ],
-            self::AIRLINES_IDS => ['required', 'array'],
-            self::AIRLINES_IDS . '.*' => ['integer', 'exists:airlines,id'],
+            self::AIRLINES_IDS => [
+                $this->isMethod('put') ? 'required' : 'sometimes',
+                'array'
+            ],
+            self::AIRLINES_IDS . '.*' => [
+                'integer',
+                Rule::exists(Airline::class, 'id')
+            ],
         ];
     }
 
@@ -32,6 +40,7 @@ class UpsertCityRequest extends FormRequest
     {
         return new CityDto(
             name: $this->string(self::NAME)->toString(),
+            airlineIds: (array) $this->input(self::AIRLINES_IDS, []),
         );
     }
 }

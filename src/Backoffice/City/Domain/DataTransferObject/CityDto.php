@@ -8,6 +8,7 @@ readonly class CityDto
 {
     public function __construct(
         public string $name,
+        public ?array $airlineIds,
     ) {
     }
 }
