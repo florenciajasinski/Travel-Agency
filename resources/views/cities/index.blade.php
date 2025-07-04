@@ -13,24 +13,16 @@
                 id="save_city_btn"
                 button="Save"
             />
-            <div id="error_message" class="text-red-600 mt-2 hidden"></div>
+            <x-error
+                id="error_message"
+                class="text-red-600 mt-2 hidden">
+            </x-error>
         </div>
 
-        <table class="table-auto w-full bg-white shadow-md rounded text-sm">
-            <thead class="bg-gray-100 text-gray-700 text-left">
-                <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Incoming Flights</th>
-                    <th class="px-4 py-2">Outgoing Flights</th>
-                    <th class="px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="city_table_body"></tbody>
-        </table>
+        <x-city-table/>
     </div>
 
-    <div id="pagination" class="mt-4 flex justify-center"></div>
+    <x-pagination/>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>

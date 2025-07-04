@@ -24,17 +24,17 @@
 
   <div class="flex justify-center gap-4 mb-8">
 
-    <a href="/cities" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
+   <x-nav-links href="/cities">
         Cities
-    </a>
+    </x-nav-links>
 
-    <a href="/airlines" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
+    <x-nav-links href="/airlines">
         Airlines
-    </a>
+    </x-nav-links>
 
-    <a href="/flights" class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow flex items-center gap-2">
+    <x-nav-links href="/flights">
         Flights
-    </a>
+    </x-nav-links>
    </div>
 
 
