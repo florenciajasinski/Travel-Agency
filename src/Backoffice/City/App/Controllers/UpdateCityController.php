@@ -19,7 +19,6 @@ class UpdateCityController
     ): JsonResponse {
         $city = $upsertCityAction->execute($upsertCityRequest->toDto(), $city);
 
-        return CityResource::make($city)
-            ->response();
+        return CityResource::make($city)->response();
     }
 }

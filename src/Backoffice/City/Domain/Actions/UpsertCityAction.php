@@ -17,6 +17,17 @@ class UpsertCityAction
         if ($city->isDirty()) {
             $city->save();
         }
+        $airlineIdsWithTime = [];
+        $airlineIds = $cityDto->airlineIds ?? [];
+
+        foreach ($airlineIds as $id) {
+            $airlineIdsWithTime[$id] = [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        $city->airlines()->sync($airlineIdsWithTime);
 
         return $city;
     }
