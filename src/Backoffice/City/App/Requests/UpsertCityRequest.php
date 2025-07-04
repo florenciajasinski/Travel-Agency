@@ -14,7 +14,7 @@ class UpsertCityRequest extends FormRequest
 {
     public const NAME = 'name';
 
-    public const AIRLINES_IDS = 'airline_ids';
+    public const AIRLINE_IDS = 'airline_ids';
 
     public function rules(): array
     {
@@ -25,11 +25,11 @@ class UpsertCityRequest extends FormRequest
                 'max:255',
                 new NameUniqueForCities(),
             ],
-            self::AIRLINES_IDS => [
+            self::AIRLINE_IDS => [
                 $this->isMethod('put') ? 'required' : 'sometimes',
                 'array',
             ],
-            self::AIRLINES_IDS . '.*' => [
+            self::AIRLINE_IDS . '.*' => [
                 'integer',
                 Rule::exists(Airline::class, 'id'),
             ],
@@ -40,7 +40,7 @@ class UpsertCityRequest extends FormRequest
     {
         return new CityDto(
             name: $this->string(self::NAME)->toString(),
-            airlineIds: (array) $this->input(self::AIRLINES_IDS, []),
+            airlineIds: (array) $this->input(self::AIRLINE_IDS, []),
         );
     }
 }
