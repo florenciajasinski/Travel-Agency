@@ -30,6 +30,10 @@
             PUT: 'PUT',
             DELETE: 'DELETE'
         };
+        const apiHeaders = {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             initAirlinesPage();
@@ -61,14 +65,11 @@
         function loadAirlines(page = 1) {
             currentPage = page;
             const url = currentCityId
-                ? `api/cities/${currentCityId}/airlines`
+                ? `/api/cities/${currentCityId}/airlines`
                 : `/api/airlines?page=${page}`;
 
             fetch(url, {
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
+                headers: apiHeaders
             })
             .then(res => res.json())
             .then(response => {
@@ -84,10 +85,7 @@
         function loadCities() {
             fetch('/api/cities', {
                 method: HTTP_METHODS.GET,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: apiHeaders
             })
             .then(res => res.json())
             .then(response => {
@@ -183,10 +181,7 @@
 
                     fetch(`/api/airlines/${airline.id}`, {
                         method: HTTP_METHODS.PUT,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
+                        headers: apiHeaders,
                         body: JSON.stringify({
                             name: newName,
                             description: newDesc
@@ -231,10 +226,7 @@
 
             fetch('/api/airlines', {
                 method: HTTP_METHODS.POST,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
+                headers: apiHeaders,
                 body: JSON.stringify({ name, description })
             })
             .then(res => {
