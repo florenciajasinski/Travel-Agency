@@ -7,63 +7,32 @@
             createLabel="Add airline"
         />
 
-        <div id="create_airline_form" class="hidden mb-6">
-            <input type="text" id="new_airline_name" class="border px-3 py-2 rounded text-sm w-full mb-2" placeholder="Name" />
-            <input type="text" id="new_airline_description" class="border px-3 py-2 rounded text-sm w-full mb-2" placeholder="Description" />
-            <button id="save_airline_btn" class="px-4 py-2 bg-green-600 text-white rounded text-sm">Save</button>
-            <button id="cancel_airline_btn" class="px-4 py-2 bg-gray-300 text-gray-800 rounded text-sm ml-2">Cancel</button>
-            <div id="airline_form_error" class="text-red-600 text-sm mt-2"></div>
-        </div>
+        <x-airline-create-form
+            id="create_airline_form"
+            nameId="new_airline_name"
+            descriptionId="new_airline_description"
+            buttonId="save_airline_btn"
+            buttonCancelId="cancel_airline_btn"
+            buttonText="Save Airline"
+        />
 
-        <table class="table-auto w-full bg-white shadow-md rounded text-sm">
-            <thead class="bg-gray-100 text-gray-700 text-left">
-                <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Description</th>
-                    <th class="px-4 py-2">Number of Flights</th>
-                    <th class="px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="airline_table_body">
-                <tr id="airline_row_template" class="hidden">
-                    <td class="px-4 py-2 id-cell"></td>
-                    <td class="px-4 py-2">
-                        <span class="name-cell"></span>
-                        <input type="text" class="edit-name hidden border px-2 py-1 rounded w-full text-sm" />
-                    </td>
-                    <td class="px-4 py-2">
-                        <span class="description-cell"></span>
-                        <textarea class="edit-desc hidden border px-2 py-1 rounded w-full text-sm" rows="3"></textarea>
-                    </td>
-                    <td class="px-4 py-2 flights-cell"></td>
-                    <td class="px-4 py-2">
-                        <div class="action-buttons flex gap-2">
-                            <button class="edit-btn text-blue-600 hover:underline">Edit</button>
-                            <button class="delete-btn text-red-600 hover:underline">Delete</button>
-                        </div>
-                        <div class="edit-buttons hidden flex gap-2 items-center">
-                            <button class="save-btn text-green-600 hover:underline">Save</button>
-                            <button class="cancel-btn text-gray-600 hover:underline">Cancel</button>
-                            <span class="error-msg text-red-600 text-xs ml-2"></span>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <x-airline-table/>
     </div>
-
-    <div id="pagination" class="mt-4 flex justify-center"></div>
+    <x-pagination/>
 
     <script>
         let airlines = [];
         let currentPage = 1;
         let currentCityId = '';
         const HTTP_METHODS = {
-        GET: 'GET',
-        POST: 'POST',
-        PUT: 'PUT',
-        DELETE: 'DELETE'
+            GET: 'GET',
+            POST: 'POST',
+            PUT: 'PUT',
+            DELETE: 'DELETE'
+        };
+        const apiHeaders = {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -95,32 +64,28 @@
 
         function loadAirlines(page = 1) {
             currentPage = page;
-            const url = currentCityId ? `api/cities/${currentCityId}/airlines` : `/api/airlines?page=${page}`;
+            const url = currentCityId
+                ? `/api/cities/${currentCityId}/airlines`
+                : `/api/airlines?page=${page}`;
 
             fetch(url, {
-                headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-                },
+                headers: apiHeaders
             })
             .then(res => res.json())
-                .then(response => {
-                    airlines = response.data;
-                    renderTable();
-                    renderPagination(response.meta);
-                })
-                .catch(error => {
-                    alert('Error loading airlines: ' + error);
-                });
+            .then(response => {
+                airlines = response.data;
+                renderTable();
+                renderPagination(response.meta);
+            })
+            .catch(error => {
+                alert('Error loading airlines: ' + error);
+            });
         }
 
         function loadCities() {
             fetch('/api/cities', {
                 method: HTTP_METHODS.GET,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: apiHeaders
             })
             .then(res => res.json())
             .then(response => {
@@ -216,30 +181,37 @@
 
                     fetch(`/api/airlines/${airline.id}`, {
                         method: HTTP_METHODS.PUT,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
+                        headers: apiHeaders,
                         body: JSON.stringify({
                             name: newName,
                             description: newDesc
                         })
                     })
                     .then(function(res) {
-                        if (!res.ok) {
-                            return res.json().then(function(data) {
-                                const fields = data.error?.fields;
-                                const message = Object.values(fields);
-                                throw new Error(message);
-                            });
-                        }
-                        return res.json();
-                    })
-                    .then(function() {
-                        loadAirlines(currentPage);
+                        return res.json().then(function(data) {
+                            if (!res.ok) {
+                                if (data?.error?.fields) {
+                                    const fields = data.error.fields;
+                                    let errorList = '<ul>';
+                                    Object.values(fields).forEach(errors => {
+                                        if (Array.isArray(errors)) {
+                                            errors.forEach(message => {
+                                                errorList += `<li>${message}</li>`;
+                                            });
+                                        }
+                                    });
+                                    errorList += '</ul>';
+                                    errorMessage.innerHTML = errorList;
+                                    return;
+                                }
+                                errorMessage.textContent = data?.error?.message;
+                                return;
+                            }
+                            loadAirlines(currentPage);
+                        });
                     })
                     .catch(function(err) {
-                        errorMessage.textContent = err.message;
+                        errorMessage.textContent = 'Unexpected error: ' + err.message;
                     });
                 });
                 tbody.appendChild(row);
@@ -247,39 +219,53 @@
         }
 
         function createAirline() {
-                const errorMessage = document.getElementById('airline_form_error');
-                const name = document.getElementById('new_airline_name').value;
-                const description = document.getElementById('new_airline_description').value;
-                errorMessage.textContent = '';
+            const errorMessage = document.getElementById('airline_form_error');
+            const name = document.getElementById('new_airline_name').value;
+            const description = document.getElementById('new_airline_description').value;
+            errorMessage.innerHTML = '';
 
-                fetch('/api/airlines', {
-                    method: HTTP_METHODS.POST,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ name, description })
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        return res.json().then(({ error }) => {
-                            const fields = error?.fields;
-                            const message = Object.values(fields);
-                            throw new Error(message);
+            fetch('/api/airlines', {
+                method: HTTP_METHODS.POST,
+                headers: apiHeaders,
+                body: JSON.stringify({ name, description })
+            })
+            .then(res => {
+                return res.json().then(data => ({ ok: res.ok, data }));
+            })
+            .then(({ ok, data }) => {
+                if (!ok) {
+                    if (data?.error?.fields) {
+                        const fields = data.error.fields;
+                        let errorList = '<ul>';
+                        Object.values(fields).forEach(errors => {
+                            if (Array.isArray(errors)) {
+                                errors.forEach(message => {
+                                    errorList += `<li>${message}</li>`;
+                                });
+                            }
                         });
+                        errorList += '</ul>';
+                        errorMessage.innerHTML = errorList;
+                        return;
                     }
-                    return res.json();
-                })
-                .then(() => {
-                    document.getElementById('create_airline_form').classList.add('hidden');
-                    loadAirlines(currentPage);
-                    document.getElementById('new_airline_name').value = '';
-                    document.getElementById('new_airline_description').value = '';
-                    errorMessage.textContent = '';
-                })
-                .catch(error => {
-                    errorMessage.textContent = error.message;
-                });
+                    errorMessage.textContent = data?.error?.message;
+                    return;
+                }
+
+                if (data.data?.status === 'error') {
+                    errorMessage.textContent = data.data.message;
+                    return;
+                }
+
+                document.getElementById('create_airline_form').classList.add('hidden');
+                document.getElementById('new_airline_name').value = '';
+                document.getElementById('new_airline_description').value = '';
+                errorMessage.innerHTML = '';
+                loadAirlines(currentPage);
+            })
+            .catch(err => {
+                errorMessage.textContent = err.message;
+            });
         }
     </script>
 </x-flight-layout>

@@ -16,13 +16,15 @@
                 buttonCancelId="cancel_flight_btn"
                 buttonText="Save Flight"
             />
-            <div id="flight_form_error" class="text-red-600 text-sm mt-2"></div>
+            <x-error
+                id="flight_form_error"
+            />
         </div>
 
         <x-flight-table/>
 
     </div>
-    <div id="pagination" class="mt-4 flex justify-center"></div>
+    <x-pagination/>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
