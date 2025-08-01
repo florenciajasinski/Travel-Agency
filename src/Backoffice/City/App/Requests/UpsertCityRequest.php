@@ -14,7 +14,7 @@ class UpsertCityRequest extends FormRequest
 {
     public const NAME = 'name';
 
-    public const AIRLINE_IDS = 'airline_ids';
+    public const AIRLINE_IDS = 'airline_id';
 
     public function rules(): array
     {
